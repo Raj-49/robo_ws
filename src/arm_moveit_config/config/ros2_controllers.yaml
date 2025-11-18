@@ -1,0 +1,61 @@
+# This config file is used by ros2_control
+controller_manager:
+  ros__parameters:
+    update_rate: 100  # Hz
+
+# Controllers must be top-level keys (not nested under controller_manager)
+joint_state_broadcaster:
+  ros__parameters:
+    type: "joint_state_broadcaster/JointStateBroadcaster"
+
+arm_controller:
+  ros__parameters:
+    type: "joint_trajectory_controller/JointTrajectoryController"
+    joints:
+      - j1
+      - j2
+      - j3
+      - j4
+      - j5
+      - j6
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    # Optional tuning
+    allow_partial_joints_goal: false
+    state_publish_rate: 50
+
+gripper_controller:
+  ros__parameters:
+    type: "joint_trajectory_controller/JointTrajectoryController"
+    joints:
+      - j7l
+      - j7r
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    allow_partial_joints_goal: false
+    state_publish_rate: 50
+
+# If you want position-only controllers, define them separately (example commented)
+# arm_controller_p:
+#   ros__parameters:
+#     type: "position_controllers/JointGroupPositionController"
+#     joints:
+#       - j1
+#       - j2
+#       - j3
+#       - j4
+#       - j5
+#       - j6
+
+# gripper_controller_p:
+#   ros__parameters:
+#     type: "position_controllers/JointGroupPositionController"
+#     joints:
+#       - j7l
+#       - j7r
