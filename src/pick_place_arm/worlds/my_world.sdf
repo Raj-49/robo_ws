@@ -129,43 +129,6 @@
       <self_collide>false</self_collide>
     </model>
 
-    <model name="box1">
-      <static>false</static>
-      <link name="link">
-        <!-- raise box so its bottom sits on the ground (box size z=0.04 -> half = 0.02) -->
-        <pose>0.15 0 0.03 0 0 0</pose>
-        <collision name="collision">
-          <geometry>
-            <box>
-              <size>0.04 0.04 0.06</size>
-            </box>
-          </geometry>
-        </collision>
-        <visual name="visual">
-          <geometry>
-            <box>
-              <size>0.04 0.04 0.06</size>
-            </box>
-          </geometry>
-          <material>
-            <ambient>1 0 0 1</ambient>
-            <diffuse>1 0 0 1</diffuse>
-          </material>
-        </visual>
-        <!-- contact sensor to publish collisions involving this box -->
-        <sensor name="box1_contact" type="contact">
-          <always_on>1</always_on>
-          <update_rate>100</update_rate>
-          <contact>
-            <collision>collision</collision>
-          </contact>
-          <visualize>0</visualize>
-          <!-- publish to a simple topic bridged to ROS2 -->
-          <topic>/box1/contacts</topic>
-        </sensor>
-      </link>
-    </model>
-
     <light name='sun' type='directional'>
       <pose>0 0 10 0 -0 0</pose>
       <cast_shadows>true</cast_shadows>
