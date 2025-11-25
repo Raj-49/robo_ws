@@ -9,8 +9,8 @@ from builtin_interfaces.msg import Duration
 class ContactMonitor(Node):
     def __init__(self):
         super().__init__('contact_monitor')
-        self.get_logger().info('Contact monitor starting, subscribing to /box1/contacts')
-        self.sub = self.create_subscription(Contacts, '/box1/contacts', self.cb_contacts, 10)
+        self.get_logger().info('Contact monitor starting, subscribing to /red_box/contacts')
+        self.sub = self.create_subscription(Contacts, '/red_box/contacts', self.cb_contacts, 10)
         self.cli_switch = self.create_client(SwitchController, '/controller_manager/switch_controller')
 
     def cb_contacts(self, msg: Contacts):

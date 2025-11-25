@@ -3,7 +3,7 @@ import shutil
 import subprocess
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, GroupAction, TimerAction, ExecuteProcess
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, GroupAction, TimerAction, ExecuteProcess, SetEnvironmentVariable
 from launch.conditions import IfCondition, UnlessCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
@@ -44,10 +44,22 @@ def generate_launch_description():
             f.write(unscaled_urdf)
     except Exception as e:
         print('Warning: failed to generate unscaled URDF from src xacro:', e)
+    
+    # Set up Gazebo resource path to include our models directory
+    models_path = os.path.join(pick_place_share, 'models')
+    gz_resource_path = os.environ.get('GZ_SIM_RESOURCE_PATH', '')
+    if gz_resource_path:
+        gz_resource_path = f"{models_path}:{gz_resource_path}"
+    else:
+        gz_resource_path = models_path
+    
     # Gazebo Sim (GZ/Ignition)
+    gazebo_env = {'GZ_SIM_RESOURCE_PATH': gz_resource_path}
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(gazebo_launch_file),
-        launch_arguments={'gz_args': ['-r ', LaunchConfiguration('world')]}.items(),
+        launch_arguments={
+            'gz_args': ['-r ', LaunchConfiguration('world')],
+        }.items(),
     )
     # Bridge Gazebo clock to ROS /clock (world in my_world.sdf is named 'empty')
     gz_world_clock = '/world/empty/clock'
@@ -65,10 +77,10 @@ def generate_launch_description():
     contact_bridge = Node(
         package='ros_gz_bridge', executable='parameter_bridge', name='gz_bridge_contacts',
         arguments=[
-            '-l', '/box1/contacts@ros_gz_interfaces/msg/Contacts@ignition.msgs.Contacts',
-            '-l', '/box1/contacts@ros_gz_interfaces/msg/Contacts@gz.msgs.Contacts',
-            '-l', '/world/empty/model/box1/link/link/sensor/box1_contact/contact@ros_gz_interfaces/msg/Contacts@ignition.msgs.Contacts',
-            '-l', '/world/empty/model/box1/link/link/sensor/box1_contact/contact@ros_gz_interfaces/msg/Contacts@gz.msgs.Contacts'
+            '-l', '/red_box/contacts@ros_gz_interfaces/msg/Contacts@ignition.msgs.Contacts',
+            '-l', '/red_box/contacts@ros_gz_interfaces/msg/Contacts@gz.msgs.Contacts',
+            '-l', '/world/empty/model/red_box/link/red_link/sensor/red_box_contact/contact@ros_gz_interfaces/msg/Contacts@ignition.msgs.Contacts',
+            '-l', '/world/empty/model/red_box/link/red_link/sensor/red_box_contact/contact@ros_gz_interfaces/msg/Contacts@gz.msgs.Contacts'
         ],
         output='screen')
     # Robot state publisher with selectable sim time
@@ -171,8 +183,14 @@ def generate_launch_description():
     if rviz_headless:
         rviz_actions.append(rviz_headless)
     rviz_group = GroupAction(actions=rviz_actions, condition=IfCondition(LaunchConfiguration('start_rviz')))
+    
+    # Set environment variable for Gazebo to find models
+    set_gz_resource_path = SetEnvironmentVariable('GZ_SIM_RESOURCE_PATH', gz_resource_path)
+    
     return LaunchDescription([
-        # args first
+        # Set environment first
+        set_gz_resource_path,
+        # args
         world_arg, x_arg, y_arg, z_arg, start_rviz_arg, headless_arg, use_sim_time_arg,
         # sim + robot
         gazebo,

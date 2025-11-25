@@ -23,6 +23,8 @@
       <shadows>true</shadows>
     </scene>
 
+
+  
     <gui fullscreen='false'>
       <plugin name='3D View' filename='GzScene3D'>
         <ignition-gui>
@@ -35,49 +37,12 @@
         <ambient_light>0.4 0.4 0.4</ambient_light>
         <background_color>0.8 0.8 0.8</background_color>
         <!-- camera_pose: x y z roll pitch yaw (radians) -->
-        <camera_pose>0.0 1.0 0.5 0.0 0.0 -1.57</camera_pose>
-      </plugin>
-
-      <plugin name='World control' filename='WorldControl'>
-        <ignition-gui>
-          <title>World control</title>
-          <property type='bool' key='showTitleBar'>false</property>
-          <property type='bool' key='resizable'>false</property>
-          <property type='double' key='height'>72</property>
-          <property type='double' key='width'>121</property>
-          <property type='double' key='z'>1</property>
-          <property type='string' key='state'>floating</property>
-          <anchors target='3D View'>
-            <line own='left' target='left'/>
-            <line own='bottom' target='bottom'/>
-          </anchors>
-        </ignition-gui>
-        <play_pause>true</play_pause>
-        <step>true</step>
-        <start_paused>true</start_paused>
-      </plugin>
-
-      <plugin name='World stats' filename='WorldStats'>
-        <ignition-gui>
-          <title>World stats</title>
-          <property type='bool' key='showTitleBar'>false</property>
-          <property type='bool' key='resizable'>false</property>
-          <property type='double' key='height'>110</property>
-          <property type='double' key='width'>290</property>
-          <property type='double' key='z'>1</property>
-          <property type='string' key='state'>floating</property>
-          <anchors target='3D View'>
-            <line own='right' target='right'/>
-            <line own='bottom' target='bottom'/>
-          </anchors>
-        </ignition-gui>
-        <sim_time>true</sim_time>
-        <real_time>true</real_time>
-        <real_time_factor>true</real_time_factor>
-        <iterations>true</iterations>
+        <camera_pose>0.0 -1.0 0.5 0.0 0.0 1.57</camera_pose>
       </plugin>
 
     </gui>
+
+
 
     <model name='ground_plane'>
       <static>true</static>
@@ -129,22 +94,87 @@
       <self_collide>false</self_collide>
     </model>
 
-    <model name="box1">
-      <static>false</static>
+        <!-- Colored Plates -->
+    <include>
+      <uri>model://plate_red</uri>
+      <name>plate_red</name>
+      <pose>-0.112035 -0.180573 0.009269 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://plate_green</uri>
+      <name>plate_green</name>
+      <pose>0.110285 -0.179150 -0.005389 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://plate_blue</uri>
+      <name>plate_blue</name>
+      <pose>0.322906 -0.177294 0.027031 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://SquareShelf</uri>
+      <name>square_shelf</name>
+      <pose>0.009297 0.350799 0 0 0 0</pose>
+    </include>
+
+    <!-- Invisible Shelf Support Surface -->
+    <model name="shelf_support">
+      <static>true</static>
+      <pose>0.009297 0.350799 0.445 0 0 0</pose>
       <link name="link">
-        <!-- raise box so its bottom sits on the ground (box size z=0.04 -> half = 0.02) -->
-        <pose>0.15 0 0.03 0 0 0</pose>
         <collision name="collision">
           <geometry>
             <box>
-              <size>0.04 0.04 0.06</size>
+              <size>0.5 0.5 0.01</size>
             </box>
           </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>100.0</mu>
+                <mu2>100.0</mu2>
+              </ode>
+            </friction>
+          </surface>
         </collision>
-        <visual name="visual">
+        <!-- Visual is omitted to make it invisible -->
+      </link>
+    </model>
+
+    <!-- Colored Boxes -->
+    <model name="red_box">
+      <static>false</static>
+      <pose>0.093550 0.192664 0.453342 0 0 0</pose>
+      <link name="red_link">
+        <collision name="red_collision">
           <geometry>
             <box>
-              <size>0.04 0.04 0.06</size>
+              <size>0.06 0.06 0.1</size>
+            </box>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>100.0</mu>
+                <mu2>100.0</mu2>
+              </ode>
+            </friction>
+            <contact>
+              <ode>
+                <kp>1000000.0</kp>
+                <kd>1.0</kd>
+                <max_vel>0.0</max_vel>
+                <min_depth>0.001</min_depth>
+              </ode>
+            </contact>
+          </surface>
+        </collision>
+        <visual name="red_visual">
+          <geometry>
+            <box>
+              <size>0.06 0.06 0.1</size>
             </box>
           </geometry>
           <material>
@@ -152,19 +182,124 @@
             <diffuse>1 0 0 1</diffuse>
           </material>
         </visual>
-        <!-- contact sensor to publish collisions involving this box -->
-        <sensor name="box1_contact" type="contact">
+        <inertial>
+          <mass>0.1</mass>
+          <inertia>
+            <ixx>0.000058</ixx>
+            <iyy>0.000058</iyy>
+            <izz>0.000020</izz>
+          </inertia>
+        </inertial>
+        <sensor name="red_box_contact" type="contact">
           <always_on>1</always_on>
           <update_rate>100</update_rate>
           <contact>
-            <collision>collision</collision>
+            <collision>red_collision</collision>
           </contact>
           <visualize>0</visualize>
-          <!-- publish to a simple topic bridged to ROS2 -->
-          <topic>/box1/contacts</topic>
+          <topic>/red_box/contacts</topic>
         </sensor>
       </link>
     </model>
+
+    <model name="green_box">
+      <static>false</static>
+      <pose>-0.074494 0.192202 0.454716 0 0 0</pose>
+      <link name="green_link">
+        <collision name="green_collision">
+          <geometry>
+            <box>
+              <size>0.06 0.06 0.1</size>
+            </box>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>100.0</mu>
+                <mu2>100.0</mu2>
+              </ode>
+            </friction>
+            <contact>
+              <ode>
+                <kp>1000000.0</kp>
+                <kd>1.0</kd>
+                <max_vel>0.0</max_vel>
+                <min_depth>0.001</min_depth>
+              </ode>
+            </contact>
+          </surface>
+        </collision>
+        <visual name="green_visual">
+          <geometry>
+            <box>
+              <size>0.06 0.06 0.1</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0 1 0 1</ambient>
+            <diffuse>0 1 0 1</diffuse>
+          </material>
+        </visual>
+        <inertial>
+          <mass>0.1</mass>
+          <inertia>
+            <ixx>0.000058</ixx>
+            <iyy>0.000058</iyy>
+            <izz>0.000020</izz>
+          </inertia>
+        </inertial>
+      </link>
+    </model>
+
+    <model name="blue_box">
+      <static>false</static>
+      <pose>0.220918 0.195334 0.453145 0 0 0</pose>
+      <link name="blue_link">
+        <collision name="blue_collision">
+          <geometry>
+            <box>
+              <size>0.06 0.06 0.1</size>
+            </box>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>100.0</mu>
+                <mu2>100.0</mu2>
+              </ode>
+            </friction>
+            <contact>
+              <ode>
+                <kp>1000000.0</kp>
+                <kd>1.0</kd>
+                <max_vel>0.0</max_vel>
+                <min_depth>0.001</min_depth>
+              </ode>
+            </contact>
+          </surface>
+        </collision>
+        <visual name="blue_visual">
+          <geometry>
+            <box>
+              <size>0.06 0.06 0.1</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0 0 1 1</ambient>
+            <diffuse>0 0 1 1</diffuse>
+          </material>
+        </visual>
+        <inertial>
+          <mass>0.1</mass>
+          <inertia>
+            <ixx>0.000058</ixx>
+            <iyy>0.000058</iyy>
+            <izz>0.000020</izz>
+          </inertia>
+        </inertial>
+      </link>
+    </model>
+
 
     <light name='sun' type='directional'>
       <pose>0 0 10 0 -0 0</pose>
