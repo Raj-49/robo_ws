@@ -572,6 +572,10 @@
 
     <gazebo reference="l7l">
         <selfCollide>false</selfCollide>
+        <mu1>100.0</mu1>
+        <mu2>100.0</mu2>
+        <kp>1000000.0</kp>
+        <kd>1.0</kd>
     </gazebo>
 
     <!-- link and joint 7r -->
@@ -620,6 +624,10 @@
 
     <gazebo reference="l7r">
         <selfCollide>false</selfCollide>
+        <mu1>100.0</mu1>
+        <mu2>100.0</mu2>
+        <kp>1000000.0</kp>
+        <kd>1.0</kd>
     </gazebo>
 
     <xacro:if value="$(arg gazebo_control)">
@@ -685,6 +693,18 @@
             <robot_param>robot_description</robot_param>
             <robot_param_node>robot_state_publisher</robot_param_node>
             <parameters>/home/raj/robo_ws/install/pick_place_arm/share/pick_place_arm/config/ros2_control.yaml</parameters>
+        </plugin>
+    </gazebo>
+
+    <!-- Detachable joint plugin for gripper attachment -->
+    <gazebo>
+        <plugin filename="ignition-gazebo-detachable-joint-system"
+                name="ignition::gazebo::systems::DetachableJoint">
+            <parent_link>l6</parent_link>
+            <child_model>box1</child_model>
+            <child_link>link</child_link>
+            <attach_topic>/box1/attach</attach_topic>
+            <detach_topic>/box1/detach</detach_topic>
         </plugin>
     </gazebo>
 

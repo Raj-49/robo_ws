@@ -30,12 +30,25 @@ install(
 )
 
 # Install scripts so launch files can find and execute them from the install space
+# Install helper scripts for launch files (share/scripts)
 install(
   PROGRAMS
     scripts/wait_and_spawn_controllers.py
     scripts/controller_starter.py
     scripts/contact_monitor.py
   DESTINATION share/${PROJECT_NAME}/scripts
+)
+
+# Install executables/nodes (lib/package_name)
+install(
+  PROGRAMS
+    scripts/pick_and_place.py
+    scripts/pick_and_place_simple.py
+    scripts/pick_and_place_moveit.py
+    scripts/pick_and_place_cartesian.py
+    scripts/demo_pick_place.py
+    scripts/gripper_attachment_node.py
+  DESTINATION lib/${PROJECT_NAME}
 )
 
 ament_package()

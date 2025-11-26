@@ -1,81 +1,33 @@
-# Ignore build and install outputs
+# ROS 2 Build Artifacts
 build/
 install/
 log/
 
-# Colcon and CMake files
-CMakeFiles/
-CMakeCache.txt
-CTestTestfile.cmake
-CTestCustom.cmake
-cmake_install.cmake
-colcon_build.rc
-colcon_command_prefix_build.sh
-colcon_command_prefix_build.sh.env
-colcon_workspace/
-
-# ROS/ROS2 specific
-.local_setup_util_sh.py
-.local_setup_util_ps1.py
-local_setup.*
-setup.*
-*_moveit_config/**/build/
-*_moveit_config/**/install/
-
 # Python
 __pycache__/
 *.py[cod]
-*.pyo
-*.pyd
-*.pyc
-*.egg-info/
-*.egg
-dist/
-build-python/
-venv/
-env/
-.eggs/
-.python-version
+*$py.class
+*.so
+.Python
 
-# Packaging
-*.deb
-*.rpm
-
-# IDEs and editors
+# IDE
 .vscode/
 .idea/
-*.sublime-workspace
-*.sublime-project
 *.swp
+*.swo
 *~
 
-# macOS
+# OS
 .DS_Store
+Thumbs.db
 
-# Logs, temporary files
-*.log
+# Unrelated packages (keep only pick_place_arm and arm_moveit_config)
+src/robo_vision/
+
+# Temporary files
 *.tmp
 *.bak
 
-# Test and coverage
-.coverage
-.coverage.*
-htmlcov/
-.pytest_cache/
 
-# Misc
-*.db
-*.sqlite
-.Rhistory
-
-# Office and binary files (do not commit large docs unless needed)
-*.docx
-*.pdf
-
-# Ignore install manifests and generated indexes
-install_manifest.txt
-ament_index/
-ament_cmake_index/
-
-# Keep source
-!/src/
+#Panda Codebase
+Panda/

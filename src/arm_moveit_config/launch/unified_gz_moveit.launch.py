@@ -80,9 +80,24 @@ def generate_launch_description():
             '-l', '/red_box/contacts@ros_gz_interfaces/msg/Contacts@ignition.msgs.Contacts',
             '-l', '/red_box/contacts@ros_gz_interfaces/msg/Contacts@gz.msgs.Contacts',
             '-l', '/world/empty/model/red_box/link/red_link/sensor/red_box_contact/contact@ros_gz_interfaces/msg/Contacts@ignition.msgs.Contacts',
-            '-l', '/world/empty/model/red_box/link/red_link/sensor/red_box_contact/contact@ros_gz_interfaces/msg/Contacts@gz.msgs.Contacts'
+            '-l', '/world/empty/model/red_box/link/red_link/sensor/red_box_contact/contact@ros_gz_interfaces/msg/Contacts@gz.msgs.Contacts',
+            '-l', '/box1/contacts@ros_gz_interfaces/msg/Contacts@ignition.msgs.Contacts',
+            '-l', '/box1/contacts@ros_gz_interfaces/msg/Contacts@gz.msgs.Contacts',
+            '-l', '/world/empty/model/box1/link/link/sensor/box1_contact/contact@ros_gz_interfaces/msg/Contacts@ignition.msgs.Contacts',
+            '-l', '/world/empty/model/box1/link/link/sensor/box1_contact/contact@ros_gz_interfaces/msg/Contacts@gz.msgs.Contacts'
         ],
         output='screen')
+    
+    # Bridge camera and attachment topics from Gazebo to ROS2
+    camera_bridge = Node(
+        package='ros_gz_bridge', executable='parameter_bridge', name='camera_bridge',
+        arguments=[
+            '/camera/image_raw@sensor_msgs/msg/Image@gz.msgs.Image',
+            '/box1/attach@std_msgs/msg/Empty@ignition.msgs.Empty',
+            '/box1/detach@std_msgs/msg/Empty@ignition.msgs.Empty',
+        ],
+        output='screen')
+    
     # Robot state publisher with selectable sim time
     robot_state_publisher = Node(
         package="robot_state_publisher",
@@ -196,6 +211,7 @@ def generate_launch_description():
         gazebo,
         clock_bridge,
         contact_bridge,
+        camera_bridge,
         robot_state_publisher,
         spawn_robot,
         # spawn controllers via installed script
