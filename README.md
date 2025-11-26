@@ -41,7 +41,7 @@ A ROS 2 Humble + Gazebo Ignition pick-and-place demonstration using a 6-DOF robo
 
 ### Running the Pick and Place Demo
 
-The demo requires **3 terminals**:
+The demo requires **2 terminals only**:
 
 #### Terminal 1: Launch Gazebo + MoveIt
 ```bash
@@ -51,24 +51,16 @@ ros2 launch arm_moveit_config unified_gz_moveit.launch.py
 
 Wait ~15 seconds for all systems to initialize.
 
-#### Terminal 2: Start Gripper Attachment Node
-```bash
-source install/setup.bash
-ros2 run pick_place_arm gripper_attachment_node.py
-```
-
-You should see:
-```
-[INFO] [gripper_attachment_node]: Gripper Attachment Node Started
-[INFO] [gripper_attachment_node]: Sent initial DETACH command (1/10)
-...
-```
-
-#### Terminal 3: Run the Demo
+#### Terminal 2: Run Integrated Demo
 ```bash
 source install/setup.bash
 python3 install/pick_place_arm/lib/pick_place_arm/demo_pick_place.py
 ```
+
+**That's it!** The demo script now includes:
+- ✅ Initial detach sequence (clears pre-attachment)
+- ✅ Stall detection and attachment logic
+- ✅ Automatic detachment on gripper open
 
 ### What Happens
 
@@ -77,6 +69,45 @@ python3 install/pick_place_arm/lib/pick_place_arm/demo_pick_place.py
 3. **Arm moves** to place_1 position with attached box
 4. **Waits 5 seconds**
 5. **Gripper opens** → Box **detaches** and is released
+
+## Configuration
+
+### Gripper Attachment Parameters
+
+The gripper attachment node can be configured via `config/gripper_params.yaml`:
+
+```yaml
+gripper_attachment_node:
+  ros__parameters:
+    stall_threshold_min: -0.020  # Lower bound for stall detection
+    stall_threshold_max: -0.003  # Upper bound for stall detection
+    open_threshold: -0.002       # Position above which gripper is open
+    detach_attempts: 10          # Detach commands sent on startup
+    gripper_joint: 'j7l'         # Joint to monitor
+```
+
+### Tuning Tips
+
+**If gripper doesn't attach:**
+- Increase `stall_threshold_max` (e.g., `-0.002`)
+- Check gripper actually stalls: `ros2 topic echo /gripper_state`
+
+**If gripper attaches too early:**
+- Decrease `stall_threshold_max` (e.g., `-0.005`)
+
+**Monitor state transitions:**
+```bash
+ros2 topic echo /gripper_state
+```
+
+You should see: `OPEN` → `GRASPING` → `ATTACHED` → `OPEN`
+
+### Using Custom Parameters
+
+```bash
+ros2 run pick_place_arm gripper_attachment_node.py \
+  --ros-args --params-file install/pick_place_arm/share/pick_place_arm/config/gripper_params.yaml
+```
 
 ## How It Works
 

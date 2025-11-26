@@ -135,6 +135,14 @@ def generate_launch_description():
         ]
     )
 
+    # Initial detach (clear pre-attachment silently)
+    initial_detach_runner = TimerAction(
+        period=15.0,
+        actions=[
+            ExecuteProcess(cmd=['python3', os.path.join(get_package_share_directory('pick_place_arm'), 'scripts', 'initial_detach.py')], output='screen')
+        ]
+    )
+
     # MoveIt move_group with selectable sim time
     cfg = moveit_config.to_dict()
     cfg.update({"use_sim_time": LaunchConfiguration('use_sim_time')})
@@ -218,6 +226,8 @@ def generate_launch_description():
         spawn_controllers_script,
         # start contact monitor
         contact_monitor_runner,
+        # initial detach (silent)
+        initial_detach_runner,
         # moveit
         move_group,
         # rviz (optional)

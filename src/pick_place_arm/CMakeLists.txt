@@ -36,6 +36,7 @@ install(
     scripts/wait_and_spawn_controllers.py
     scripts/controller_starter.py
     scripts/contact_monitor.py
+    scripts/initial_detach.py
   DESTINATION share/${PROJECT_NAME}/scripts
 )
 
