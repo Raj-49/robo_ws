@@ -1,3 +1,5 @@
+
+https://github.com/user-attachments/assets/2713ac59-0031-4014-9676-2b3022415f8e
 # ROS2 Pick and Place Robot Arm
 
 A complete ROS2 Humble + Gazebo Harmonic pick-and-place system with vision capabilities and hardcoded position control.
@@ -21,7 +23,7 @@ This project implements a 6-DOF robotic arm with a parallel gripper for automate
 
 - Ubuntu 22.04
 - ROS2 Humble
-- Gazebo Harmonic
+- Gazebo fortress/Harmonic
 - MoveIt2
 
 ### Installation
@@ -54,10 +56,7 @@ python3 src/pick_place_arm/scripts/pick_and_place_demo.py
 
 ## 📹 Demo Video
 
-<video src="Pick_&_Place.mp4" controls="controls" style="max-width: 100%;">
-</video>
-
-**[Watch on Google Drive (Backup Link)](https://drive.google.com/file/d/1C_M2txVnZsJHPQAOEpeznM7FyYz-8S8L/view?usp=drive_link)**
+https://github.com/user-attachments/assets/13009ab0-9363-4307-bf94-7a6cc68d9077
 
 ## 🎮 Menu Options
 
