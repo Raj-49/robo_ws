@@ -54,7 +54,10 @@ python3 src/pick_place_arm/scripts/pick_and_place_demo.py
 
 ## 📹 Demo Video
 
-See `Pick_&_place.webp` for a demonstration of the system in action.
+<video src="Pick_&_Place.mp4" controls="controls" style="max-width: 100%;">
+</video>
+
+**[Watch on Google Drive (Backup Link)](https://drive.google.com/file/d/1C_M2txVnZsJHPQAOEpeznM7FyYz-8S8L/view?usp=drive_link)**
 
 ## 🎮 Menu Options
 
