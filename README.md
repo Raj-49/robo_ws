@@ -1,175 +1,182 @@
-# Pick and Place Robot Arm
+# ROS2 Pick and Place Robot Arm
 
-A ROS 2 Humble + Gazebo Ignition pick-and-place demonstration using a 6-DOF robot arm with a 2-finger gripper and dynamic attachment system.
+A complete ROS2 Humble + Gazebo Harmonic pick-and-place system with vision capabilities and hardcoded position control.
 
-## Features
+## 🎯 Project Overview
 
-- **6-DOF Robot Arm** with MoveIt2 motion planning
-- **Smart Gripper** with stall detection and dynamic attachment
-- **DetachableJoint Plugin** for physics-based object grasping
-- **Gazebo Ignition** simulation environment
-- **CHOMP, OMPL, and Pilz** motion planners
+This project implements a 6-DOF robotic arm with a parallel gripper for automated pick-and-place operations. The system supports both vision-based object detection and hardcoded position control for reliable operation.
 
-## Prerequisites
+## ✨ Features
+
+- **Hardcoded Pick-and-Place**: Reliable operation using pre-recorded joint positions
+- **Contact-Based Grasping**: Intelligent gripper control that adapts to object contact
+- **Vision System**: Camera-based object detection and localization (foundation implemented)
+- **RViz Visualization**: Real-time visualization with interactive markers
+- **MoveIt Integration**: Motion planning and collision avoidance
+- **Gazebo Simulation**: Physics-based simulation environment
+
+## 🚀 Quick Start
+
+### Prerequisites
 
 - Ubuntu 22.04
-- ROS 2 Humble
-- Gazebo Ignition (Fortress/Garden)
+- ROS2 Humble
+- Gazebo Harmonic
 - MoveIt2
 
-## Installation
+### Installation
 
-1. **Clone the repository:**
-   ```bash
-   cd ~/robo_ws/src
-   git clone <your-repo-url>
-   ```
-
-2. **Install dependencies:**
-   ```bash
-   cd ~/robo_ws
-   rosdep install --from-paths src --ignore-src -r -y
-   ```
-
-3. **Build the workspace:**
-   ```bash
-   colcon build
-   source install/setup.bash
-   ```
-
-## Usage
-
-### Running the Pick and Place Demo
-
-The demo requires **2 terminals only**:
-
-#### Terminal 1: Launch Gazebo + MoveIt
 ```bash
+cd ~/robo_ws
+colcon build
 source install/setup.bash
+```
+
+### Running the Demo
+
+**Launch the simulation:**
+
+```bash
 ros2 launch arm_moveit_config unified_gz_moveit.launch.py
 ```
 
-Wait ~15 seconds for all systems to initialize.
-
-#### Terminal 2: Run Integrated Demo
-```bash
-source install/setup.bash
-python3 install/pick_place_arm/lib/pick_place_arm/demo_pick_place.py
-```
-
-**That's it!** The demo script now includes:
-- ✅ Initial detach sequence (clears pre-attachment)
-- ✅ Stall detection and attachment logic
-- ✅ Automatic detachment on gripper open
-
-### What Happens
-
-1. **Gripper closes** on the box at home position
-2. **Stall detection** triggers → Box **attaches** to gripper
-3. **Arm moves** to place_1 position with attached box
-4. **Waits 5 seconds**
-5. **Gripper opens** → Box **detaches** and is released
-
-## Configuration
-
-### Gripper Attachment Parameters
-
-The gripper attachment node can be configured via `config/gripper_params.yaml`:
-
-```yaml
-gripper_attachment_node:
-  ros__parameters:
-    stall_threshold_min: -0.020  # Lower bound for stall detection
-    stall_threshold_max: -0.003  # Upper bound for stall detection
-    open_threshold: -0.002       # Position above which gripper is open
-    detach_attempts: 10          # Detach commands sent on startup
-    gripper_joint: 'j7l'         # Joint to monitor
-```
-
-### Tuning Tips
-
-**If gripper doesn't attach:**
-- Increase `stall_threshold_max` (e.g., `-0.002`)
-- Check gripper actually stalls: `ros2 topic echo /gripper_state`
-
-**If gripper attaches too early:**
-- Decrease `stall_threshold_max` (e.g., `-0.005`)
-
-**Monitor state transitions:**
-```bash
-ros2 topic echo /gripper_state
-```
-
-You should see: `OPEN` → `GRASPING` → `ATTACHED` → `OPEN`
-
-### Using Custom Parameters
+**Run pick-and-place demo (contact-based):**
 
 ```bash
-ros2 run pick_place_arm gripper_attachment_node.py \
-  --ros-args --params-file install/pick_place_arm/share/pick_place_arm/config/gripper_params.yaml
+python3 src/pick_place_arm/scripts/pick_and_place_contact.py
 ```
 
-## How It Works
+**Alternative (time-based):**
 
-### Smart Grasping System
+```bash
+python3 src/pick_place_arm/scripts/pick_and_place_demo.py
+```
 
-The `gripper_attachment_node.py` implements intelligent grasping:
+## 📹 Demo Video
 
-1. **Stall Detection**: Monitors gripper joint position (`j7l`)
-   - If gripper stops mid-close (e.g., `-0.005` instead of commanded `-0.032`), it detected the box!
-   
-2. **Stop & Hold**: Sends a trajectory command to hold the current position
-   - Prevents physics instability from over-squeezing
-   
-3. **Dynamic Attachment**: Publishes to `/box1/attach` topic
-   - `DetachableJoint` plugin creates a fixed joint between gripper and box
-   
-4. **Auto-Detach**: When gripper opens, publishes to `/box1/detach`
-   - Joint is removed, box is free
+See `Pick_&_place.webp` for a demonstration of the system in action.
 
-### Key Components
+## 🎮 Menu Options
 
-- **`pick_place_arm`**: Robot URDF, worlds, and scripts
-- **`arm_moveit_config`**: MoveIt configuration and launch files
-- **`gripper_attachment_node.py`**: Smart grasping logic
-- **`demo_pick_place.py`**: Simple pick-and-place demo
+1. **Pick and Place RED box** - Table 2 → Red Basket → Home
+2. **Pick and Place GREEN box** - Table 3 → Green Basket → Home
+3. **Pick and Place BLUE box** - Table 1 → Blue Basket → Home
+4. **Pick and Place ALL** - Complete RGB sequence
 
-## Configuration
+## 📊 Current Status
 
-### Gripper Joint Limits
-- `j7l`: `-0.07` to `0.0` (left finger, moves negative to close)
-- `j7r`: `0.0` to `0.07` (right finger, moves positive to close)
+### ✅ Completed
 
-### Box Specifications
-- Size: `0.06 x 0.06 x 0.06` m
-- Mass: `0.2` kg
-- Position: `x=0.1412, y=-0.0045, z=0.03`
+- [x] Robot arm URDF and MoveIt configuration
+- [x] Gazebo simulation with DetachableJoint system
+- [x] Hardcoded pick positions from SRDF
+- [x] Contact-based gripper control
+- [x] 3 working pick-and-place positions (RGB to matching baskets)
+- [x] RViz visualization with basket meshes
+- [x] Manual control and visualization tools
+- [x] Git repository with proper branching
 
-### Place Position (place_1)
+### 🔄 In Progress
+
+- [ ] Record remaining 6 positions (cross-basket placements)
+- [ ] Full vision-based pick-and-place integration
+- [ ] Complete documentation
+
+## 🗂️ Project Structure
+
+```
+robo_ws/
+├── src/
+│   ├── arm_moveit_config/          # MoveIt configuration
+│   │   ├── config/
+│   │   │   ├── moveit.rviz         # RViz config
+│   │   │   └── pick_place_arm.srdf # Semantic robot description
+│   │   └── launch/
+│   │       └── unified_gz_moveit.launch.py
+│   └── pick_place_arm/             # Main package
+│       ├── models/                  # Gazebo models (boxes, baskets, tables)
+│       ├── scripts/
+│       │   ├── pick_and_place_contact.py    # Contact-based demo
+│       │   ├── pick_and_place_demo.py       # Time-based demo
+│       │   ├── manual_control_and_viz.py    # Manual control tool
+│       │   └── vision_interactive_demo.py   # Vision testing
+│       ├── urdf/
+│       │   └── arm.urdf.xacro      # Robot description
+│       └── worlds/
+│           └── my_world.sdf        # Gazebo world
+```
+
+## 🔧 Key Scripts
+
+- **pick_and_place_contact.py**: Contact-based grasping with automatic gripper stop
+- **pick_and_place_demo.py**: Simple time-based pick-and-place
+- **manual_control_and_viz.py**: Manual attachment control and position recording
+- **vision_interactive_demo.py**: Vision system testing and development
+
+## 📝 Recorded Positions
+
+### Pick Positions (from SRDF)
+
 ```python
-[0.0, 1.57, 0.0, -1.57, 0.0, 0.0]  # j1-j6
+blue_pick:  [0.959, 0.394, 0.479, 0.234, 0.451, 0.00005]
+red_pick:   [0.0001, 0.445, 0.451, 0.365, 0.411, -0.0000009]
+green_pick: [-0.948, 0.268, 0.565, 0.679, 0.171, -0.00009]
 ```
 
-## Troubleshooting
+### Place Positions (recorded)
 
-### Box is pre-attached on startup
-- The `gripper_attachment_node` sends 10 detach commands over 5 seconds at startup
-- Make sure to start it **before** running the demo
+```python
+blue_to_blue:   [-1.908633, -0.285813, 0.672824, 0.187192, 0.450882, 0.000170]
+red_to_red:     [-2.436366, 0.065933, 0.303389, 0.197981, 0.411065, -0.000045]
+green_to_green: [-1.362681, -0.156609, 0.418936, 0.427446, 0.171263, -0.000047]
+```
 
-### Gripper doesn't attach
-- Check that `gripper_attachment_node.py` is running
-- Look for "Grasp Detected (Stall at X) -> STOPPING & ATTACHING" message
-- Verify bridges are active: `ros2 topic list | grep box1`
+### Home Position
 
-### Physics instability / "spring" effect
-- The "Stop & Hold" logic should prevent this
-- If it persists, check gripper close position in `demo_pick_place.py`
+```python
+home: [-0.000090, -0.000069, -0.000047, -0.000100, -0.000024, 0.000027]
+```
 
-## License
+## 🛠️ Technical Details
 
-[Your License Here]
+### DetachableJoint System
 
-## Acknowledgments
+- Uses Gazebo Harmonic's DetachableJoint plugin
+- Attach/detach via ROS topics (`/[color]_box/attach`, `/[color]_box/detach`)
+- Parent link: `l6` (end effector)
 
-- DetachableJoint implementation inspired by MBZIRC suction gripper plugin
-- MoveIt2 and Gazebo Ignition communities
+### Gripper Control
+
+- Parallel gripper with 2 fingers (`j7l`, `j7r`)
+- Contact-based closing: stops at `-0.010` position
+- Extraction movement before detach to prevent sticking
+
+### Vision System (Foundation)
+
+- Camera mounted on end effector
+- Object detection pipeline implemented
+- Ready for full integration
+
+## 🤝 Contributing
+
+This is a personal project. For questions or collaboration, please open an issue.
+
+## 📄 License
+
+MIT License - See LICENSE file for details
+
+## 🙏 Acknowledgments
+
+- ROS2 Community
+- MoveIt2 Team
+- Gazebo Development Team
+
+## 📧 Contact
+
+Raj - GitHub: @Raj-49
+
+---
+
+**Branch:** `hardcoded-pick-place-v1`  
+**Status:** ✅ Working Demo  
+**Next Milestone:** Vision-based pick-and-place integration

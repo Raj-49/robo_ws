@@ -113,7 +113,10 @@ class PickAndPlaceDemo(Node):
         self.get_logger().info(f"📍 Step 1: Moving to {color.upper()} pick position")
         if not self.move_arm(self.pick_positions[color], duration=4.0):
             return False
-        time.sleep(1.0)
+        
+        # CRITICAL: Wait for arm to fully settle at position before attaching
+        # This fixes the "early attachment" bug where box attaches before gripper reaches it
+        time.sleep(1.5)
         
         # Step 2: Attach box
         self.get_logger().info(f"🔗 Step 2: Attaching {color.upper()} box")
