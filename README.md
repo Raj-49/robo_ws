@@ -1,5 +1,3 @@
-
-https://github.com/user-attachments/assets/2713ac59-0031-4014-9676-2b3022415f8e
 # ROS2 Pick and Place Robot Arm
 
 A complete ROS2 Humble + Gazebo Harmonic pick-and-place system with vision capabilities and hardcoded position control.
