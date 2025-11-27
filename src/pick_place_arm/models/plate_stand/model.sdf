@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+  <model name="plate_stand">
+    <static>true</static>
+    <link name="link">
+      <!-- Cylindrical stand (diameter 0.2m, height 1m) at bottom -->
+      <collision name="stand_collision">
+        <pose>0 0 0.5 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.01</radius>
+            <length>1</length>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name="stand_visual">
+        <pose>0 0 0.5 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.01</radius>
+            <length>1</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.3 0.3 0.3 1</ambient>
+          <diffuse>0.4 0.4 0.4 1</diffuse>
+          <specular>0.5 0.5 0.5 1</specular>
+        </material>
+      </visual>
+      
+      <!-- Plate (0.07 x 0.07 x 0.01m) on top of cylinder -->
+      <collision name="plate_collision">
+        <pose>0 0 1.005 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.07 0.07 0.01</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="plate_visual">
+        <pose>0 0 1.005 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.07 0.07 0.01</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.7 0.7 0.7 1</ambient>
+          <diffuse>0.8 0.8 0.8 1</diffuse>
+          <specular>0.3 0.3 0.3 1</specular>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>

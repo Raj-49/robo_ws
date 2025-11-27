@@ -696,16 +696,40 @@
         </plugin>
     </gazebo>
 
-    <!-- Detachable joint plugin for gripper attachment -->
+
+    <!-- Detachable joint plugins for colored boxes -->
     <gazebo>
         <plugin filename="ignition-gazebo-detachable-joint-system"
                 name="ignition::gazebo::systems::DetachableJoint">
             <parent_link>l6</parent_link>
-            <child_model>box1</child_model>
-            <child_link>link</child_link>
-            <attach_topic>/box1/attach</attach_topic>
-            <detach_topic>/box1/detach</detach_topic>
+            <child_model>red_box</child_model>
+            <child_link>red_link</child_link>
+            <attach_topic>/red_box/attach</attach_topic>
+            <detach_topic>/red_box/detach</detach_topic>
         </plugin>
     </gazebo>
+    
+    <gazebo>
+        <plugin filename="ignition-gazebo-detachable-joint-system"
+                name="ignition::gazebo::systems::DetachableJoint">
+            <parent_link>l6</parent_link>
+            <child_model>green_box</child_model>
+            <child_link>green_link</child_link>
+            <attach_topic>/green_box/attach</attach_topic>
+            <detach_topic>/green_box/detach</detach_topic>
+        </plugin>
+    </gazebo>
+    
+    <gazebo>
+        <plugin filename="ignition-gazebo-detachable-joint-system"
+                name="ignition::gazebo::systems::DetachableJoint">
+            <parent_link>l6</parent_link>
+            <child_model>blue_box</child_model>
+            <child_link>blue_link</child_link>
+            <attach_topic>/blue_box/attach</attach_topic>
+            <detach_topic>/blue_box/detach</detach_topic>
+        </plugin>
+    </gazebo>
+
 
 </robot>

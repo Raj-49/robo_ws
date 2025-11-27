@@ -49,6 +49,12 @@ install(
     scripts/pick_and_place_cartesian.py
     scripts/demo_pick_place.py
     scripts/gripper_attachment_node.py
+    scripts/vision_pick_place_node.py
+    scripts/vision_interactive_demo.py
+    scripts/camera_calibration.py
+    scripts/vision_utils.py
+    scripts/object_detector.py
+    scripts/ik_utils.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

@@ -16,18 +16,26 @@ class InitialDetachNode(Node):
     def __init__(self):
         super().__init__('initial_detach_node')
         
-        # Publisher
-        self.detach_pub = self.create_publisher(Empty, '/box1/detach', 10)
+        # Publishers for all colored boxes
+        self.red_detach = self.create_publisher(Empty, '/red_box/detach', 10)
+        self.green_detach = self.create_publisher(Empty, '/green_box/detach', 10)
+        self.blue_detach = self.create_publisher(Empty, '/blue_box/detach', 10)
         
-        # Wait for bridge to be ready
-        time.sleep(2.0)
+        # Wait longer for Gazebo and bridge to be fully ready
+        self.get_logger().info("Waiting for Gazebo to be ready...")
+        time.sleep(3.0)
         
         # Send detach commands
-        for i in range(10):
-            self.detach_pub.publish(Empty())
-            time.sleep(0.5)
+        self.get_logger().info("Detaching all colored boxes...")
         
-        self.get_logger().info("Initial detach complete - Box is free")
+        # Send multiple times to ensure receipt
+        for i in range(10):
+            self.red_detach.publish(Empty())
+            self.green_detach.publish(Empty())
+            self.blue_detach.publish(Empty())
+            time.sleep(0.3)
+        
+        self.get_logger().info("✅ Initial detach complete - All boxes are free")
         
         # Shutdown after completing
         rclpy.shutdown()

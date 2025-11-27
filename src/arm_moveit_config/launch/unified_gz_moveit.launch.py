@@ -93,8 +93,20 @@ def generate_launch_description():
         package='ros_gz_bridge', executable='parameter_bridge', name='camera_bridge',
         arguments=[
             '/camera/image_raw@sensor_msgs/msg/Image@gz.msgs.Image',
-            '/box1/attach@std_msgs/msg/Empty@ignition.msgs.Empty',
-            '/box1/detach@std_msgs/msg/Empty@ignition.msgs.Empty',
+            '/camera/depth@sensor_msgs/msg/Image@gz.msgs.Image',
+            '/camera/camera_info@sensor_msgs/msg/CameraInfo@gz.msgs.CameraInfo',
+            # Colored box attachment topics
+            '/red_box/attach@std_msgs/msg/Empty@gz.msgs.Empty',
+            '/red_box/detach@std_msgs/msg/Empty@gz.msgs.Empty',
+            '/green_box/attach@std_msgs/msg/Empty@gz.msgs.Empty',
+            '/green_box/detach@std_msgs/msg/Empty@gz.msgs.Empty',
+            '/blue_box/attach@std_msgs/msg/Empty@gz.msgs.Empty',
+            '/blue_box/detach@std_msgs/msg/Empty@gz.msgs.Empty',
+            # Bridge all model poses to TF message type (but publish to separate topic to avoid spam)
+            '/world/empty/pose/info@tf2_msgs/msg/TFMessage@gz.msgs.Pose_V',
+        ],
+        remappings=[
+            ('/world/empty/pose/info', '/model_poses'),
         ],
         output='screen')
     
@@ -228,6 +240,16 @@ def generate_launch_description():
         contact_monitor_runner,
         # initial detach (silent)
         initial_detach_runner,
+        # RViz Interactive Control (Visualization & Attach/Detach)
+        ExecuteProcess(
+            cmd=['python3', os.path.join(get_package_share_directory('pick_place_arm'), 'scripts', 'rviz_interactive_control.py')],
+            output='screen'
+        ),
+        # TF Relay (Fixes Gazebo->TF spam)
+        ExecuteProcess(
+            cmd=['python3', os.path.join(get_package_share_directory('pick_place_arm'), 'scripts', 'pose_to_tf_relay.py')],
+            output='screen'
+        ),
         # moveit
         move_group,
         # rviz (optional)

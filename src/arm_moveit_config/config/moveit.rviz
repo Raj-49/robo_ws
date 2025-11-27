@@ -13,6 +13,15 @@ Visualization Manager:
     - Class: rviz_default_plugins/Grid
       Name: Grid
       Value: true
+    - Class: rviz_default_plugins/InteractiveMarkers
+      Name: InteractiveMarkers
+      Update Topic: /box_controls/update
+      Update Topic: /box_controls/update
+      Value: true
+    - Class: rviz_default_plugins/MarkerArray
+      Name: MarkerArray
+      Topic: /visualization_marker_array
+      Value: true
     - Class: moveit_rviz_plugin/MotionPlanning
       Name: MotionPlanning
       Planned Path:

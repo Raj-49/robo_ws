@@ -31,6 +31,31 @@
         <joint name="j5" value="0"/>
         <joint name="j6" value="0"/>
     </group_state>
+    <group_state name="red_pick" group="arm">
+        <joint name="j1" value="9.990135855041453e-05"/>
+        <joint name="j2" value="0.44531366847265"/>
+        <joint name="j3" value="0.4509790868877058"/>
+        <joint name="j4" value="0.3652866062418217"/>
+        <joint name="j5" value="0.4110300069085086"/>
+        <joint name="j6" value="-8.548499507841293e-07"/>
+    </group_state>
+    <group_state name="green_pick" group="arm">
+        <joint name="j1" value="-0.947632737185824"/>
+        <joint name="j2" value="0.2682407096016315"/>
+        <joint name="j3" value="0.5651149470764493"/>
+        <joint name="j4" value="0.6793300068077888"/>
+        <joint name="j5" value="0.1713292871339623"/>
+        <joint name="j6" value="-9.324230798529365e-05"/>
+    </group_state>
+    <group_state name="blue_pick" group="arm">
+        <joint name="j1" value="0.9590333013756456"/>
+        <joint name="j2" value="0.3939240112089198"/>
+        <joint name="j3" value="0.479481411325086"/>
+        <joint name="j4" value="0.23403999842028253"/>
+        <joint name="j5" value="0.45097861722136046"/>
+        <joint name="j6" value="5.363057321014417e-05"/>
+    </group_state>
+        
     <group_state name="pick_1" group="arm">
         <joint name="j1" value="-1.8909"/>
         <joint name="j2" value="1.57"/>
