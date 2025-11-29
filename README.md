@@ -24,9 +24,10 @@ It features a hybrid control system:
 - **Contact Intelligence**: Adapts gripper closing based on physical contact.
 
 ---
-## video
+## Video
 
 https://github.com/user-attachments/assets/241f8717-51c9-49bb-8f73-4b1a71cf1a6a
+
 ---
 
 ## ✨ Key Features
