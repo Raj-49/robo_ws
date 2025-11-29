@@ -1,9 +1,9 @@
 # 🤖 Vision-Based Pick and Place Robot Arm
 
-A complete **ROS2 Humble + Gazebo Harmonic** robotic system capable of autonomous pick-and-place operations using computer vision.
+A complete **ROS2 Humble + Gazebo Fortress** robotic system capable of autonomous pick-and-place operations using computer vision.
 
 ![ROS2](https://img.shields.io/badge/ROS2-Humble-blue)
-![Gazebo](https://img.shields.io/badge/Gazebo-Harmonic-orange)
+![Gazebo](https://img.shields.io/badge/Gazebo-Fortress-orange)
 ![Python](https://img.shields.io/badge/Python-3.10-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
@@ -80,11 +80,12 @@ sudo apt install ros-humble-desktop
 sudo apt install ros-dev-tools
 ```
 
-### 2. Install Gazebo Harmonic
+### 2. Install Gazebo Fortress
 
 ```bash
 sudo apt-get update
-sudo apt-get install ros-humble-ros-gz
+sudo apt-get install ros-humble-ros-ign-gazebo
+sudo apt-get install ignition-fortress
 ```
 
 ### 3. Install MoveIt 2

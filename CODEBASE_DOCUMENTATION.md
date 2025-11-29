@@ -163,6 +163,38 @@ This workspace contains a vision-based pick and place robotic system with 3 ROS2
 - **`sensors_3d.yaml`**: 3D sensor configuration (camera)
 - **`moveit.rviz`**: RViz configuration with MoveIt displays
 
+### `/launch`
+
+- **`unified_gz_moveit.launch.py`** ⭐ Main Launch File
+  - Starts Gazebo Fortress
+  - Spawns robot
+  - Launches MoveIt move_group
+  - Starts RViz
+  - Runs controller spawner (12s delay)
+  - Runs initial detach (15s delay)
+  - Starts TF relay and interactive control
+
+---
+
+## Package 3: `robo_vision`
+
+**Purpose**: Vision processing package (placeholder/future expansion).
+
+### Files
+
+- **`setup.py`**: Python package setup
+- **`package.xml`**: Package metadata
+
+---
+
+## Root Workspace Files
+
+### `/home/raj/robo_ws/`
+
+- **`README.md`**: Project overview and usage instructions
+- **`TODO.md`**: Future tasks and improvements
+- **`HARDWARE_INTERFACE_GUIDE.md`**: Comprehensive guide for real hardware integration
+
 ---
 
 ## Data Flow
@@ -208,6 +240,7 @@ This workspace contains a vision-based pick and place robotic system with 3 ROS2
 ## Key Technologies
 
 **ROS2**: Humble
+**Gazebo**: Fortress 6.17.0 (ign-gazebo)
 **Gazebo**: Fortress 6.17.0 (ign-gazebo)
 **MoveIt2**: Motion planning framework
 **OpenCV**: Vision processing (cv_bridge, HSV detection)
