@@ -23,7 +23,7 @@
         <joint name="j7r"/>
     </group>
     <!--GROUP STATES: Purpose: Define a named state for a particular group, in terms of joint values. This is useful to define states like 'folded arms'-->
-    <group_state name="zero" group="arm">
+    <group_state name="Home" group="arm">
         <joint name="j1" value="0"/>
         <joint name="j2" value="0"/>
         <joint name="j3" value="0"/>
@@ -31,7 +31,7 @@
         <joint name="j5" value="0"/>
         <joint name="j6" value="0"/>
     </group_state>
-    <group_state name="red_pick" group="arm">
+    <group_state name="Table-2 - Pick" group="arm">
         <joint name="j1" value="9.990135855041453e-05"/>
         <joint name="j2" value="0.44531366847265"/>
         <joint name="j3" value="0.4509790868877058"/>
@@ -39,7 +39,7 @@
         <joint name="j5" value="0.4110300069085086"/>
         <joint name="j6" value="-8.548499507841293e-07"/>
     </group_state>
-    <group_state name="green_pick" group="arm">
+    <group_state name="Table-3 - Pick" group="arm">
         <joint name="j1" value="-0.947632737185824"/>
         <joint name="j2" value="0.2682407096016315"/>
         <joint name="j3" value="0.5651149470764493"/>
@@ -47,7 +47,7 @@
         <joint name="j5" value="0.1713292871339623"/>
         <joint name="j6" value="-9.324230798529365e-05"/>
     </group_state>
-    <group_state name="blue_pick" group="arm">
+    <group_state name="Table-1 - Pick" group="arm">
         <joint name="j1" value="0.9590333013756456"/>
         <joint name="j2" value="0.3939240112089198"/>
         <joint name="j3" value="0.479481411325086"/>
@@ -55,8 +55,32 @@
         <joint name="j5" value="0.45097861722136046"/>
         <joint name="j6" value="5.363057321014417e-05"/>
     </group_state>
+    <group_state name="Blue_Basket - Place" group="arm">
+        <joint name="j1" value="-1.908633"/>
+        <joint name="j2" value="-0.285813"/>
+        <joint name="j3" value="0.672824"/>
+        <joint name="j4" value="0.187192"/>
+        <joint name="j5" value="0.450882"/>
+        <joint name="j6" value="0.000170"/>
+    </group_state>
+    <group_state name="Red_Basket - Place" group="arm">
+        <joint name="j1" value="-2.436366"/>
+        <joint name="j2" value="0.065933"/>
+        <joint name="j3" value="0.303389"/>
+        <joint name="j4" value="0.197981"/>
+        <joint name="j5" value="0.411065"/>
+        <joint name="j6" value="-0.000045"/>
+    </group_state>
+    <group_state name="Green_Basket - Place" group="arm">
+        <joint name="j1" value="-1.362681"/>
+        <joint name="j2" value="-0.156609"/>
+        <joint name="j3" value="0.418936"/>
+        <joint name="j4" value="0.427446"/>
+        <joint name="j5" value="0.171263"/>
+        <joint name="j6" value="-0.000047"/>
+    </group_state>
         
-    <group_state name="pick_1" group="arm">
+    <group_state name="Demo - Pick" group="arm">
         <joint name="j1" value="-1.8909"/>
         <joint name="j2" value="1.57"/>
         <joint name="j3" value="-1.4139"/>
@@ -64,15 +88,15 @@
         <joint name="j5" value="0.1995"/>
         <joint name="j6" value="0.2949"/>
     </group_state>
-    <group_state name="open" group="gripper">
+    <group_state name="Open" group="gripper">
         <joint name="j7l" value="0"/>
         <joint name="j7r" value="0"/>
     </group_state>
-    <group_state name="close" group="gripper">
+    <group_state name="Close" group="gripper">
         <joint name="j7l" value="-0.035"/>
         <joint name="j7r" value="0.035"/>
     </group_state>
-    <group_state name="place_1" group="arm">
+    <group_state name="Demo - Place" group="arm">
         <joint name="j1" value="-0.3296"/>
         <joint name="j2" value="-0.7546"/>
         <joint name="j3" value="0.7546"/>

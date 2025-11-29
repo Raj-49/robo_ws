@@ -3,12 +3,13 @@ gripper_attachment_node:
     # Stall detection range (gripper stopped on object)
     stall_threshold_min: -0.020
     stall_threshold_max: -0.003
-    
+
     # Open threshold (gripper considered open)
     open_threshold: -0.002
-    
+
     # Number of detach attempts on startup
     detach_attempts: 10
-    
+
     # Gripper joint to monitor
-    gripper_joint: 'j7l'
+    gripper_joint_1: "j7l"
+    gripper_joint_2: "j7r"

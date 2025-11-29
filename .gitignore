@@ -28,9 +28,5 @@ src/robo_vision/
 *.tmp
 *.bak
 
-
-#Panda Codebase
-Panda/
-
 #readme
 TODO.md

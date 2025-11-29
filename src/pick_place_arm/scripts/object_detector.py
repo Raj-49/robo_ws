@@ -24,6 +24,7 @@ class ColorObjectDetector:
         }
         
         self.min_area = 100  # Minimum contour area (pixels)
+        self.max_area = 5000 # Maximum contour area (pixels) - excludes baskets
     
     def detect(self, image, color='red'):
         """
@@ -94,8 +95,12 @@ class ColorObjectDetector:
         if not contours:
             return None
         
-        # Filter by area and get largest
-        valid_contours = [c for c in contours if cv2.contourArea(c) > self.min_area]
+        # Filter by area
+        valid_contours = []
+        for c in contours:
+            area = cv2.contourArea(c)
+            if self.min_area < area < self.max_area:
+                valid_contours.append(c)
         
         if not valid_contours:
             return None

@@ -81,7 +81,7 @@
     <!-- RGB-D Camera for vision-based manipulation -->
     <model name="camera">
       <static>true</static>
-      <pose>0.12 -0.02 1.3 0 1.57 0</pose>
+      <pose>0.1880 -0.15 1.01 0 1.57 1.57</pose>
       <link name="link">
         <!-- RGB Camera -->
         <sensor name="camera_sensor" type="camera">
@@ -125,7 +125,7 @@
       </link>
     </model>
 
-    <!-- Table 1 (Yellow) - Left -->
+    <!-- Table 2 - middle -->
     <model name="pillar_table-1">
       <static>true</static>
       <pose>0.1351 -0.4045 -0.6886 0 0 0</pose>
@@ -168,14 +168,14 @@
             </box>
           </geometry>
           <material>
-            <ambient>1 1 0 1</ambient>
-            <diffuse>1 1 0 1</diffuse>
+            <ambient>0.3 0.3 0.3 1</ambient>
+            <diffuse>0.4 0.4 0.4 1</diffuse>
           </material>
         </visual>
       </link>
     </model>
 
-    <!-- Table 2 (Cyan) - Middle -->
+    <!-- Table 3 (Cyan) - Right -->
     <model name="pillar_table-2">
       <static>true</static>
       <pose>0.4673 -0.2480 -0.6703 0 0 -0.6123</pose>
@@ -218,14 +218,14 @@
             </box>
           </geometry>
           <material>
-            <ambient>0 1 1 1</ambient>
-            <diffuse>0 1 1 1</diffuse>
+            <ambient>0.3 0.3 0.3 1</ambient>
+            <diffuse>0.4 0.4 0.4 1</diffuse>
           </material>
         </visual>
       </link>
     </model>
 
-    <!-- Table 3 (Magenta) - Right -->
+    <!-- Table 1 - Left -->
     <model name="pillar_table-3">
       <static>true</static>
       <pose>-0.1886 -0.2271 -0.7102 0 0 -0.9765</pose>
@@ -268,8 +268,8 @@
             </box>
           </geometry>
           <material>
-            <ambient>1 0 1 1</ambient>
-            <diffuse>1 0 1 1</diffuse>
+            <ambient>0.3 0.3 0.3 1</ambient>
+            <diffuse>0.4 0.4 0.4 1</diffuse>
           </material>
         </visual>
       </link>
@@ -299,7 +299,7 @@
     <!-- Colored Boxes on table -->
     <model name="red_box">
       <static>false</static>
-      <pose>0.1388 -0.3719 0.3497 0 0 0</pose>
+      <pose>-0.1601 -0.2155 0.3248 -1.5708 0 0.5671</pose>
       <link name="red_link">
         <collision name="red_collision">
           <geometry>
@@ -357,7 +357,7 @@
 
     <model name="green_box">
       <static>false</static>
-      <pose>0.4413 -0.2343 0.3647 0 0 0.9485</pose>
+      <pose>0.1388 -0.3719 0.3497 0 0 0</pose>
       <link name="green_link">
         <collision name="green_collision">
           <geometry>
@@ -406,7 +406,7 @@
 
     <model name="blue_box">
       <static>false</static>
-      <pose>-0.1601 -0.2155 0.3248 -1.5708 0 0.5671</pose>
+      <pose>0.4413 -0.2343 0.3647 0 0 0.9485</pose>
       <link name="blue_link">
         <collision name="blue_collision">
           <geometry>

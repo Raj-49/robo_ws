@@ -1,185 +1,214 @@
-# ROS2 Pick and Place Robot Arm
+# 🤖 Vision-Based Pick and Place Robot Arm
 
-A complete ROS2 Humble + Gazebo Harmonic pick-and-place system with vision capabilities and hardcoded position control.
+A complete **ROS2 Humble + Gazebo Harmonic** robotic system capable of autonomous pick-and-place operations using computer vision.
+
+![ROS2](https://img.shields.io/badge/ROS2-Humble-blue)
+![Gazebo](https://img.shields.io/badge/Gazebo-Harmonic-orange)
+![Python](https://img.shields.io/badge/Python-3.10-green)
+![License](https://img.shields.io/badge/License-MIT-yellow)
+
+---
 
 ## 🎯 Project Overview
 
-This project implements a 6-DOF robotic arm with a parallel gripper for automated pick-and-place operations. The system supports both vision-based object detection and hardcoded position control for reliable operation.
+This project implements a 6-DOF robotic arm with a parallel gripper that can:
 
-## ✨ Features
+1.  **See**: Detect colored boxes (Red, Green, Blue) using a camera.
+2.  **Think**: Determine which table the box is on and plan a pick sequence.
+3.  **Act**: Autonomously pick the box and place it in the matching colored basket.
 
-- **Hardcoded Pick-and-Place**: Reliable operation using pre-recorded joint positions
-- **Contact-Based Grasping**: Intelligent gripper control that adapts to object contact
-- **Vision System**: Camera-based object detection and localization (foundation implemented)
-- **RViz Visualization**: Real-time visualization with interactive markers
-- **MoveIt Integration**: Motion planning and collision avoidance
-- **Gazebo Simulation**: Physics-based simulation environment
+It features a hybrid control system:
 
-## 🚀 Quick Start
+- **Vision System**: Detects object presence and location.
+- **Hardcoded Precision**: Uses pre-recorded, validated joint positions for reliable grasping.
+- **Contact Intelligence**: Adapts gripper closing based on physical contact.
 
-### Prerequisites
+---
 
-- Ubuntu 22.04
-- ROS2 Humble
-- Gazebo Harmonic
-- MoveIt2
+## ✨ Key Features
 
-### Installation
+- **👁️ Computer Vision**: Real-time color detection and spatial filtering (ROI) to distinguish boxes from baskets.
+- **🧠 Smart Logic**: Automatically maps detected X-coordinates to Table 1, 2, or 3.
+- **🦾 Reliable Grasping**: "Minimal Close" strategy to prevent object penetration and physics glitches.
+- **🛡️ Safety Validation**: Verifies object position hasn't shifted before attempting a pick.
+- **🖥️ Clean Visualization**: Custom annotated camera feed with position labels and status.
+- **🔄 Flexible Input**: Supports single, multiple, or specific sequences (e.g., `[red, green]`).
+
+---
+
+## 🛠️ Prerequisites
+
+- **OS**: Ubuntu 22.04 LTS (Jammy Jellyfish)
+- **Middleware**: ROS2 Humble Hawksbill
+- **Simulation**: Gazebo Harmonic (gz-sim)
+- **Planning**: MoveIt 2
+
+---
+
+## 🆕 Fresh Installation (From Scratch)
+
+If you are starting with a fresh computer (or VM) and don't have ROS2 installed yet, follow these steps:
+
+### 1. Install ROS2 Humble
+
+```bash
+# Set locale
+locale  # check for UTF-8
+
+sudo apt update && sudo apt install locales
+sudo locale-gen en_US en_US.UTF-8
+sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+export LANG=en_US.UTF-8
+
+# Setup Sources
+sudo apt install software-properties-common
+sudo add-apt-repository universe
+
+sudo apt update && sudo apt install curl -y
+sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
+
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(source /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+
+# Install ROS2 Packages
+sudo apt update
+sudo apt install ros-humble-desktop
+sudo apt install ros-dev-tools
+```
+
+### 2. Install Gazebo Harmonic
+
+```bash
+sudo apt-get update
+sudo apt-get install ros-humble-ros-gz
+```
+
+### 3. Install MoveIt 2
+
+```bash
+sudo apt install ros-humble-moveit
+```
+
+### 4. Install Dependencies
+
+```bash
+sudo apt install python3-colcon-common-extensions python3-rosdep
+sudo rosdep init
+rosdep update
+```
+
+---
+
+## 📥 Project Installation
+
+Once you have the prerequisites, set up this project:
+
+### 1. Create Workspace
+
+```bash
+mkdir -p ~/robo_ws/src
+cd ~/robo_ws/src
+```
+
+### 2. Clone Repository
+
+```bash
+git clone <repository_url> .
+```
+
+### 3. Install Dependencies
 
 ```bash
 cd ~/robo_ws
+rosdep install --from-paths src --ignore-src -r -y
+```
+
+### 4. Build
+
+```bash
 colcon build
 source install/setup.bash
 ```
 
-### Running the Demo
+---
 
-**Launch the simulation:**
+## 🚀 Usage Guide
 
-```bash
-ros2 launch arm_moveit_config unified_gz_moveit.launch.py
-```
+### 1. Launch the System
 
-**Run pick-and-place demo (contact-based):**
+This starts Gazebo, MoveIt, RViz, and spawns the robot.
 
 ```bash
-python3 src/pick_place_arm/scripts/pick_and_place_contact.py
+ros2 launch pick_place_arm unified_gz_moveit.launch.py
 ```
 
-**Alternative (time-based):**
+_Wait about 15 seconds for the controllers to spawn and the robot to initialize._
+
+### 2. Run Vision System
+
+Open a new terminal, source the workspace, and run the main script:
 
 ```bash
-python3 src/pick_place_arm/scripts/pick_and_place_demo.py
+source install/setup.bash
+python3 src/pick_place_arm/scripts/vision_pick_place.py
 ```
 
-## 📹 Demo Video
+### 3. View Camera Feed
 
-<video src="Pick_&_Place.mp4" controls="controls" style="max-width: 100%;">
-</video>
+To see what the robot sees (with annotations):
 
-**[Watch on Google Drive (Backup Link)](https://drive.google.com/file/d/1C_M2txVnZsJHPQAOEpeznM7FyYz-8S8L/view?usp=drive_link)**
-
-## 🎮 Menu Options
-
-1. **Pick and Place RED box** - Table 2 → Red Basket → Home
-2. **Pick and Place GREEN box** - Table 3 → Green Basket → Home
-3. **Pick and Place BLUE box** - Table 1 → Blue Basket → Home
-4. **Pick and Place ALL** - Complete RGB sequence
-
-## 📊 Current Status
-
-### ✅ Completed
-
-- [x] Robot arm URDF and MoveIt configuration
-- [x] Gazebo simulation with DetachableJoint system
-- [x] Hardcoded pick positions from SRDF
-- [x] Contact-based gripper control
-- [x] 3 working pick-and-place positions (RGB to matching baskets)
-- [x] RViz visualization with basket meshes
-- [x] Manual control and visualization tools
-- [x] Git repository with proper branching
-
-### 🔄 In Progress
-
-- [ ] Record remaining 6 positions (cross-basket placements)
-- [ ] Full vision-based pick-and-place integration
-- [ ] Complete documentation
-
-## 🗂️ Project Structure
-
-```
-robo_ws/
-├── src/
-│   ├── arm_moveit_config/          # MoveIt configuration
-│   │   ├── config/
-│   │   │   ├── moveit.rviz         # RViz config
-│   │   │   └── pick_place_arm.srdf # Semantic robot description
-│   │   └── launch/
-│   │       └── unified_gz_moveit.launch.py
-│   └── pick_place_arm/             # Main package
-│       ├── models/                  # Gazebo models (boxes, baskets, tables)
-│       ├── scripts/
-│       │   ├── pick_and_place_contact.py    # Contact-based demo
-│       │   ├── pick_and_place_demo.py       # Time-based demo
-│       │   ├── manual_control_and_viz.py    # Manual control tool
-│       │   └── vision_interactive_demo.py   # Vision testing
-│       ├── urdf/
-│       │   └── arm.urdf.xacro      # Robot description
-│       └── worlds/
-│           └── my_world.sdf        # Gazebo world
+```bash
+ros2 run rqt_image_view rqt_image_view
 ```
 
-## 🔧 Key Scripts
+_Select `/camera/image_annotated` from the dropdown._
 
-- **pick_and_place_contact.py**: Contact-based grasping with automatic gripper stop
-- **pick_and_place_demo.py**: Simple time-based pick-and-place
-- **manual_control_and_viz.py**: Manual attachment control and position recording
-- **vision_interactive_demo.py**: Vision system testing and development
+### 4. Control the Robot
 
-## 📝 Recorded Positions
+The script will prompt you for input. Enter a list of colors to pick:
 
-### Pick Positions (from SRDF)
+- **Single Box**: `[red]`
+- **Two Boxes**: `[green, blue]`
+- **All Boxes**: `[red, green, blue]`
 
-```python
-blue_pick:  [0.959, 0.394, 0.479, 0.234, 0.451, 0.00005]
-red_pick:   [0.0001, 0.445, 0.451, 0.365, 0.411, -0.0000009]
-green_pick: [-0.948, 0.268, 0.565, 0.679, 0.171, -0.00009]
-```
-
-### Place Positions (recorded)
-
-```python
-blue_to_blue:   [-1.908633, -0.285813, 0.672824, 0.187192, 0.450882, 0.000170]
-red_to_red:     [-2.436366, 0.065933, 0.303389, 0.197981, 0.411065, -0.000045]
-green_to_green: [-1.362681, -0.156609, 0.418936, 0.427446, 0.171263, -0.000047]
-```
-
-### Home Position
-
-```python
-home: [-0.000090, -0.000069, -0.000047, -0.000100, -0.000024, 0.000027]
-```
-
-## 🛠️ Technical Details
-
-### DetachableJoint System
-
-- Uses Gazebo Harmonic's DetachableJoint plugin
-- Attach/detach via ROS topics (`/[color]_box/attach`, `/[color]_box/detach`)
-- Parent link: `l6` (end effector)
-
-### Gripper Control
-
-- Parallel gripper with 2 fingers (`j7l`, `j7r`)
-- Contact-based closing: stops at `-0.010` position
-- Extraction movement before detach to prevent sticking
-
-### Vision System (Foundation)
-
-- Camera mounted on end effector
-- Object detection pipeline implemented
-- Ready for full integration
-
-## 🤝 Contributing
-
-This is a personal project. For questions or collaboration, please open an issue.
-
-## 📄 License
-
-MIT License - See LICENSE file for details
-
-## 🙏 Acknowledgments
-
-- ROS2 Community
-- MoveIt2 Team
-- Gazebo Development Team
-
-## 📧 Contact
-
-Raj - GitHub: @Raj-49
+The robot will execute the sequence, picking each box from its detected table and placing it in the matching basket.
 
 ---
 
-**Branch:** `hardcoded-pick-place-v1`  
-**Status:** ✅ Working Demo  
-**Next Milestone:** Vision-based pick-and-place integration
+## 📂 Project Structure
+
+```
+robo_ws/src/
+├── pick_place_arm/             # Main Package
+│   ├── launch/                 # Launch files
+│   ├── scripts/                # Python control scripts
+│   │   ├── vision_pick_place.py       # ⭐ Main Vision Script
+│   │   ├── object_detector.py         # Color detection logic
+│   │   ├── pick_and_place_contact.py  # Contact-based demo
+│   │   └── ...
+│   ├── models/                 # Gazebo assets (baskets, tables)
+│   └── worlds/                 # Simulation world
+├── arm_moveit_config/          # MoveIt Configuration
+│   ├── config/                 # SRDF, Controllers, Kinematics
+│   └── ...
+└── ...
+```
+
+---
+
+## 🔧 Troubleshooting
+
+- **"Controllers not active"**: Wait 15-20 seconds after launch. The spawner script has a built-in delay.
+- **"Box not detected"**: Ensure the box is in the camera's view (bottom 60% of frame).
+- **"Motion Plan Failed"**: The robot might be in a singularity or collision. Restart the simulation.
+
+---
+
+## 👨‍💻 Author
+
+**Raj**
+_Vision-Based Robotics Enthusiast_
+
+---
+
+**Branch**: `Vision_based_pick-plce`
+**Status**: ✅ Production Ready
