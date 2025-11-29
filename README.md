@@ -45,7 +45,7 @@ https://github.com/user-attachments/assets/241f8717-51c9-49bb-8f73-4b1a71cf1a6a
 
 - **OS**: Ubuntu 22.04 LTS (Jammy Jellyfish)
 - **Middleware**: ROS2 Humble Hawksbill
-- **Simulation**: Gazebo Harmonic (gz-sim)
+- **Simulation**: Gazebo Fortress 6.17.0 (ign-gazebo)
 - **Planning**: MoveIt 2
 
 ---
