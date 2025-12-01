@@ -43,10 +43,8 @@ install(
 install(
   PROGRAMS
     scripts/vision_pick_place.py
-    scripts/pick_and_place_contact.py
     scripts/object_detector.py
     scripts/ik_utils.py
-    scripts/vision_utils.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

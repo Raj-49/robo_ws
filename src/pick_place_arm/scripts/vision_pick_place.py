@@ -42,7 +42,8 @@ class VisionPickPlace(Node):
     def __init__(self):
         super().__init__('vision_pick_place')
         
-        # Action clients
+        # Creating Action clients ------------------------------------------------------------------------------------------------------------------
+
         self.arm_client = ActionClient(
             self, FollowJointTrajectory, '/arm_controller/follow_joint_trajectory'
         )
@@ -50,11 +51,13 @@ class VisionPickPlace(Node):
             self, FollowJointTrajectory, '/gripper_controller/follow_joint_trajectory'
         )
         
-        # Joint names
+        # List of Joint names -----------------------------------------------------------------------------------------------------------------------
+
         self.arm_joints = ['j1', 'j2', 'j3', 'j4', 'j5', 'j6']
         self.gripper_joints = ['j7l', 'j7r']
         
-        # Publishers for box attachment
+        # Creating Publishers for box attachment/detachment -----------------------------------------------------------------------------------------
+
         self.attach_pubs = {
             'red': self.create_publisher(Empty, '/red_box/attach', 10),
             'green': self.create_publisher(Empty, '/green_box/attach', 10),
@@ -66,24 +69,31 @@ class VisionPickPlace(Node):
             'blue': self.create_publisher(Empty, '/blue_box/detach', 10)
         }
         
-        # State tracking
+        # State tracking ----------------------------------------------------------------------------------------------------------------------------
+
         self.current_attached_box = None
         self.gripper_state = GripperState.OPEN
         
-        # Initial box positions (recorded on first detection)
+        # Initial box positions (recorded on first detection) ---------------------------------------------------------------------------------------
+
         self.initial_box_positions = {}  # {color: (x, y, table_num)}
-        self.latest_box_positions = {}   # Shared state for visualization thread
+        self.latest_box_positions = {}   # Stores the live, constantly updated positions for visualization.
         self.position_tolerance = 5.0  # cm tolerance for position validation
         
-        # Camera
-        self.bridge = CvBridge()
-        self.latest_rgb = None
-        self.detector = ColorObjectDetector()
-        # Use Best Effort QoS for camera to ensure we get images
-        self.create_subscription(Image, '/camera/image_raw', self.rgb_callback, qos_profile_sensor_data)
-        self.image_pub = self.create_publisher(Image, '/camera/image_annotated', 10)
+        # Camera Processing Setup  ------------------------------------------------------------------------------------------------------------------
+
+        self.bridge = CvBridge() # Converts ROS Image messages ↔ OpenCV images.
+        self.latest_rgb = None # Stores the latest RGB frame received from the camera.
+        self.detector = ColorObjectDetector() # This is your color-based object detector
+
+        # Camera Subscription------------------------------------------------------------------------------------------------------------------------
+
+        # Every time a new camera frame arrives → self.rgb_callback() is called. qos_profile_sensor_data ensures fast, non-reliable streaming (best for cameras).
+        self.create_subscription(Image, '/camera/image_raw', self.rgb_callback, qos_profile_sensor_data) 
+        self.image_pub = self.create_publisher(Image, '/camera/image_annotated', 10) # Publish Annotated Camera Feed
         
-        # Hardcoded positions from SRDF
+        # Hardcoded positions from SRDF -------------------------------------------------------------------------------------------------------------
+
         self.positions = {
             'home': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
             'table1_pick': [0.9590333013756456, 0.3939240112089198, 0.479481411325086,
@@ -99,30 +109,36 @@ class VisionPickPlace(Node):
         
         self.get_logger().info("Vision Pick and Place System Initialized")
         
-        # Wait for servers
+        # Wait for servers --------------------------------------------------------------------------------------------------------------------------
+
         self.get_logger().info("Waiting for action servers...")
         self.arm_client.wait_for_server()
         self.gripper_client.wait_for_server()
         self.get_logger().info("✓ Action servers ready!")
         
-        # Start background thread for ROS callbacks
+        # Start background thread for ROS callbacks -------------------------------------------------------------------------------------------------
+
         self.executor_thread = threading.Thread(target=self.spin_thread, daemon=True)
         self.executor_thread.start()
         
-        # Start visualization thread
+        # Start visualization thread ----------------------------------------------------------------------------------------------------------------
+
         self.vis_thread = threading.Thread(target=self.visualization_loop, daemon=True)
         self.vis_thread.start()
         
-        # Wait for camera
+        # Wait for camera ---------------------------------------------------------------------------------------------------------------------------
+
         self.get_logger().info("Waiting for camera...")
         self.wait_for_camera()
         
     def spin_thread(self):
         """Background thread to process callbacks"""
-        rclpy.spin(self)
+        rclpy.spin(self) # A loop that keeps your ROS node alive and handles all incoming messages and callbacks.
     
     def rgb_callback(self, msg):
-        """Store latest RGB image"""
+
+        # Callback: convert ROS image to OpenCV format and store latest frame
+
         if self.latest_rgb is None:
             self.get_logger().info(f"📸 Received first image! Size: {msg.width}x{msg.height}")
         try:
@@ -163,27 +179,33 @@ class VisionPickPlace(Node):
                 continue
 
             try:
-                # Get image dimensions
+                # Get image dimensions ------------------------------------------------------------------------------------------------------------
+
                 img_width = self.latest_rgb.shape[1]
                 img_height = self.latest_rgb.shape[0]
                 left_threshold = img_width / 3
                 right_threshold = 2 * img_width / 3
                 
-                # Define table ROI (bottom 60% of image, baskets in top 40%)
+                # Define table ROI (bottom 60% of image, baskets in top 40%)-------------------------------------------------------------------------
+
                 table_roi_top = int(img_height * 0.4)
                 
-                # Create visualization image
+                # Create visualization image --------------------------------------------------------------------------------------------------------
+
                 vis_img = self.latest_rgb.copy()
                 
-                # Draw ROI boundary only (shows table zone starts here)
+                # Draw ROI boundary only (shows table zone starts here)------------------------------------------------------------------------------
+
                 cv2.line(vis_img, (0, table_roi_top), (img_width, table_roi_top), (0, 0, 0), 1)
                 cv2.putText(vis_img, "Table Zone", (10, table_roi_top + 20), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)
                 
-                # Detect boxes
+                # Detect boxes ----------------------------------------------------------------------------------------------------------------------
+
                 detections = self.detector.detect_all(self.latest_rgb)
                 current_positions = {}
                 
-                # Approximate conversion: 640px width ~= 100cm workspace -> ~6.4 px/cm
+                # Approximate conversion: 640px width ~= 100cm workspace -> ~6.4 px/cm --------------------------------------------------------------
+                
                 pixels_per_cm = 6.4 
                 threshold_px = self.position_tolerance * pixels_per_cm
                 

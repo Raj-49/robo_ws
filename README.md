@@ -114,11 +114,11 @@ The system follows a hierarchical architecture with three main layers:
 
 ### System Architecture Diagram
 
-![System Architecture](System_Architecture-coloured.drawio.png)
+![System Architecture](/Diagram/System_Architecture-coloured.drawio.png)
 
 ### Time-Sequence Diagram
 
-![Time-Sequence Diagram](Time-Sequence_Diagram-Coloured.drawio.png)
+![Time-Sequence Diagram](/Diagram/Time-Sequence_Diagram-coloured.drawio.png)
 
 ### Software Stack
 
@@ -139,7 +139,7 @@ The system follows a hierarchical architecture with three main layers:
 ## 📂 Project Structure
 
 ```
-robo_ws/
+Dexter-vision-based-pick-place-robotic-arm/
 ├── src/
 │   ├── pick_place_arm/                    # Main Package
 │   │   ├── CMakeLists.txt                 # Build configuration
@@ -238,13 +238,19 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-a
 sudo apt update
 sudo apt install ros-humble-desktop
 sudo apt install ros-dev-tools
+
+# Source ROS2 environment
+echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
+source /opt/ros/humble/setup.bash
 ```
 
 #### 2. Install Gazebo Fortress
 
 ```bash
 sudo apt-get update
-sudo apt-get install ros-humble-ros-ign-gazebo
+sudo apt-get install ros-humble-ros-gz
+sudo apt-get install ros-humble-ros-gz-sim
+sudo apt-get install ros-humble-ros-gz-bridge
 sudo apt-get install ignition-fortress
 ```
 
@@ -254,7 +260,27 @@ sudo apt-get install ignition-fortress
 sudo apt install ros-humble-moveit
 ```
 
-#### 4. Install Dependencies
+#### 4. Install ROS2 Controllers and Additional Packages
+
+```bash
+sudo apt install ros-humble-ros2-control
+sudo apt install ros-humble-ros2-controllers
+sudo apt install ros-humble-controller-manager
+sudo apt install ros-humble-joint-state-publisher
+sudo apt install ros-humble-joint-state-publisher-gui
+sudo apt install ros-humble-xacro
+sudo apt install ros-humble-cv-bridge
+```
+
+#### 5. Install Python Dependencies
+
+```bash
+sudo apt install python3-pip
+pip3 install opencv-python
+pip3 install numpy
+```
+
+#### 6. Install Build Tools
 
 ```bash
 sudo apt install python3-colcon-common-extensions python3-rosdep
@@ -264,39 +290,39 @@ rosdep update
 
 ### Project Installation
 
-#### 1. Create Workspace
+#### 7. Create Workspace
 
 ```bash
-mkdir -p ~/robo_ws/src
-cd ~/robo_ws/src
+mkdir -p ~/Dexter-vision-based-pick-place-robotic-arm/src
+cd ~/Dexter-vision-based-pick-place-robotic-arm/src
 ```
 
-#### 2. Clone Repository
+#### 8. Clone Repository
 
 ```bash
-git clone <repository_url> .
+git clone https://github.com/Raj-49/Dexter-vision-based-pick-place-robotic-arm.git .
 # Or if cloning from a specific branch:
-git clone -b Vision_based_pick-plce <repository_url> .
+git clone -b Vision_based_pick-plce https://github.com/Raj-49/Dexter-vision-based-pick-place-robotic-arm.git .
 ```
 
-#### 3. Install Project Dependencies
+#### 9. Install Project Dependencies
 
 ```bash
-cd ~/robo_ws
+cd ~/Dexter-vision-based-pick-place-robotic-arm
 rosdep install --from-paths src --ignore-src -r -y
 ```
 
-#### 4. Build the Workspace
+#### 10. Build the Workspace
 
 ```bash
 colcon build
 source install/setup.bash
 ```
 
-**Note**: Add `source ~/robo_ws/install/setup.bash` to your `~/.bashrc` for automatic sourcing:
+**Note**: Add `source ~/Dexter-vision-based-pick-place-robotic-arm/install/setup.bash` to your `~/.bashrc` for automatic sourcing:
 
 ```bash
-echo "source ~/robo_ws/install/setup.bash" >> ~/.bashrc
+echo "source ~/Dexter-vision-based-pick-place-robotic-arm/install/setup.bash" >> ~/.bashrc
 ```
 
 ---
@@ -312,7 +338,7 @@ echo "source ~/robo_ws/install/setup.bash" >> ~/.bashrc
 Open a terminal and launch the complete system:
 
 ```bash
-source ~/robo_ws/install/setup.bash
+source ~/Dexter-vision-based-pick-place-robotic-arm/install/setup.bash
 ros2 launch pick_place_arm unified_gz_moveit.launch.py
 ```
 
@@ -332,7 +358,7 @@ ros2 launch pick_place_arm unified_gz_moveit.launch.py
 Open a **new terminal**:
 
 ```bash
-source ~/robo_ws/install/setup.bash
+source ~/Dexter-vision-based-pick-place-robotic-arm/install/setup.bash
 python3 src/pick_place_arm/scripts/vision_pick_place.py
 ```
 

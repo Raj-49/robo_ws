@@ -2,14 +2,18 @@
 import time
 import rclpy
 from rclpy.node import Node
-
 from controller_manager_msgs.srv import ListControllers, LoadController, SwitchController, ConfigureController
 from builtin_interfaces.msg import Duration
 
 class ControllerSpawner(Node):
+
+    # Phase 1 : Create Ros2 Node --------------------------------------------------------------------------------------------------------------------
+
     def __init__(self):
         super().__init__('wait_and_spawn')
         self.get_logger().info('Controller spawner starting')
+
+    # Phase 2 : wait for 4 services to be avalilable ------------------------------------------------------------------------------------------------
 
     def wait_for_services(self, timeout=30.0):
         # wait for controller_manager services
@@ -29,6 +33,8 @@ class ControllerSpawner(Node):
                 return None, None, None, None
         return None, None, None, None
 
+    # Phase 3 : Sends a request → returns all controllers currently known ---------------------------------------------------------------------------
+
     def list_controllers(self, cli_list):
         req = ListControllers.Request()
         fut = cli_list.call_async(req)
@@ -39,6 +45,8 @@ class ControllerSpawner(Node):
             return controllers
         self.get_logger().warn('Failed to call list_controllers')
         return []
+
+    # Phase 4 : Tells controller_manager:Load this controller plugin into memory --------------------------------------------------------------------
 
     def load_controller(self, cli_load, name):
         req = LoadController.Request()
@@ -51,6 +59,8 @@ class ControllerSpawner(Node):
             return ok
         self.get_logger().error(f'load_controller {name} failed or timed out')
         return False
+
+    # Phase 5 : Moves controller from unconfigured → inactive ---------------------------------------------------------------------------------------
 
     def configure_controller(self, cli_configure, name, retries=3):
         req = ConfigureController.Request()
@@ -67,6 +77,8 @@ class ControllerSpawner(Node):
             time.sleep(0.5)
         self.get_logger().error(f'configure_controller {name} failed after {retries} attempts')
         return False
+
+    #  Phase 6 : It sends: controllers to activate ,controllers to deactivate -----------------------------------------------------------------------
 
     def switch_controllers(self, cli_switch, activate_controllers, deactivate_controllers, strictness=2, timeout_sec=5.0):
         req = SwitchController.Request()
@@ -89,10 +101,16 @@ class ControllerSpawner(Node):
         self.get_logger().error('switch_controller call failed or timed out')
         return False
 
+# Main Function -------------------------------------------------------------------------------------------------------------------------------------
 
 def main():
+
+    # Step 1 — Activate joint_state_broadcaster -----------------------------------------------------------------------------------------------------
+
     rclpy.init()
     node = ControllerSpawner()
+
+    # Step 2 — Wait for /controller_manager to be ready ---------------------------------------------------------------------------------------------
 
     cli_list, cli_load, cli_switch, cli_configure = node.wait_for_services(timeout=40.0)
     if cli_list is None:
@@ -101,11 +119,13 @@ def main():
         rclpy.shutdown()
         return
 
-    # log existing controllers
-    existing = node.list_controllers(cli_list)
+    # Step 3 — List/log existing controllers --------------------------------------------------------------------------------------------------------
 
+    existing = node.list_controllers(cli_list)
     controllers = ['joint_state_broadcaster', 'arm_controller', 'gripper_controller']
-    # try loading missing controllers
+
+    # Step 4 — Load missing controllers -------------------------------------------------------------------------------------------------------------
+
     for ctrl in controllers:
         found = any(c.name == ctrl for c in existing)
         if found:
@@ -117,18 +137,21 @@ def main():
                 node.get_logger().warn(f'Controller {ctrl} failed to load; check ros2_control.yaml and controller type availability')
             time.sleep(0.5)
 
-    # configure controllers (required before activation)
+    #  Step 5 — Configure all controllers (required before activation) ------------------------------------------------------------------------------
+
     for ctrl in controllers:
         node.get_logger().info(f'Configuring controller {ctrl}')
         node.configure_controller(cli_configure, ctrl)
         time.sleep(0.2)
 
-    # activate controllers: joint_state first, then others
+    # Step 6 — Activate them in the correct order ---------------------------------------------------------------------------------------------------
+
     node.switch_controllers(cli_switch, ['joint_state_broadcaster'], [], strictness=2, timeout_sec=5.0)
     time.sleep(0.5)
     node.switch_controllers(cli_switch, ['arm_controller','gripper_controller'], [], strictness=2, timeout_sec=5.0)
 
-    # final list
+    # Step 7 — Final list + shutdown -----------------------------------------------------------------------------------------------------------------\
+
     node.list_controllers(cli_list)
     node.get_logger().info('Controller spawn sequence finished')
     node.destroy_node()
