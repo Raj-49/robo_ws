@@ -2,6 +2,8 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="pick_place_arm">
 
     <xacro:arg name="gazebo_control" default="true" />
+    <xacro:arg name="mesh_path" default="file://$(find pick_place_arm)/meshes" />
+    <xacro:property name="mesh_path" value="$(arg mesh_path)" />
     <!-- Add dummy world link and fixed base_joint so base_link is not the URDF root
          (matches SRDF which declares base_joint and avoids KDL root-inertia warning) -->
     <link name="world" />
@@ -36,7 +38,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="package://pick_place_arm/meshes/base_link.STL"
+                    filename="${mesh_path}/base_link.STL"
                     scale="1 1 1" />
             </geometry>
             <material
@@ -52,7 +54,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="package://pick_place_arm/meshes/base_link.STL"
+                    filename="${mesh_path}/base_link.STL"
                     scale="1 1 1" />
             </geometry>
         </collision>
@@ -81,7 +83,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="package://pick_place_arm/meshes/l1.STL"
+                    filename="${mesh_path}/l1.STL"
                     scale="1 1 1" />
             </geometry>
             <material
@@ -96,7 +98,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="package://pick_place_arm/meshes/l1.STL"
+                    filename="${mesh_path}/l1.STL"
                     scale="1 1 1" />
             </geometry>
         </collision>
@@ -159,7 +161,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="package://pick_place_arm/meshes/l2.STL"
+                    filename="${mesh_path}/l2.STL"
                     scale="1 1 1" />
             </geometry>
             <material
@@ -174,7 +176,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="package://pick_place_arm/meshes/l2.STL"
+                    filename="${mesh_path}/l2.STL"
                     scale="1 1 1" />
             </geometry>
         </collision>
@@ -237,7 +239,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="package://pick_place_arm/meshes/l3.STL"
+                    filename="${mesh_path}/l3.STL"
                     scale="1 1 1" />
             </geometry>
             <material
@@ -252,7 +254,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="package://pick_place_arm/meshes/l3.STL"
+                    filename="${mesh_path}/l3.STL"
                     scale="1 1 1" />
             </geometry>
         </collision>
@@ -315,7 +317,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="package://pick_place_arm/meshes/l4.STL"
+                    filename="${mesh_path}/l4.STL"
                     scale="1 1 1" />
             </geometry>
             <material
@@ -330,7 +332,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="package://pick_place_arm/meshes/l4.STL"
+                    filename="${mesh_path}/l4.STL"
                     scale="1 1 1" />
             </geometry>
         </collision>
@@ -393,7 +395,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="package://pick_place_arm/meshes/l5.STL"
+                    filename="${mesh_path}/l5.STL"
                     scale="1 1 1" />
             </geometry>
             <material
@@ -408,7 +410,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="package://pick_place_arm/meshes/l5.STL"
+                    filename="${mesh_path}/l5.STL"
                     scale="1 1 1" />
             </geometry>
         </collision>
@@ -471,7 +473,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="package://pick_place_arm/meshes/l6.STL"
+                    filename="${mesh_path}/l6.STL"
                     scale="1 1 1" />
             </geometry>
             <material
@@ -486,7 +488,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="package://pick_place_arm/meshes/l6.STL"
+                    filename="${mesh_path}/l6.STL"
                     scale="1 1 1" />
             </geometry>
         </collision>
@@ -536,7 +538,7 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="package://pick_place_arm/meshes/l7l.STL" scale="1 1 1" />
+                <mesh filename="${mesh_path}/l7l.STL" scale="1 1 1" />
             </geometry>
             <material name="">
                 <color rgba="1 1 1 1" />
@@ -545,7 +547,7 @@
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="package://pick_place_arm/meshes/l7l.STL" scale="1 1 1" />
+                <mesh filename="${mesh_path}/l7l.STL" scale="1 1 1" />
             </geometry>
         </collision>
     </link>
@@ -588,7 +590,7 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="package://pick_place_arm/meshes/l7r.STL" scale="1 1 1" />
+                <mesh filename="${mesh_path}/l7r.STL" scale="1 1 1" />
             </geometry>
             <material name="">
                 <color rgba="1 1 1 1" />
@@ -597,7 +599,7 @@
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="package://pick_place_arm/meshes/l7r.STL" scale="1 1 1" />
+                <mesh filename="${mesh_path}/l7r.STL" scale="1 1 1" />
             </geometry>
         </collision>
     </link>
