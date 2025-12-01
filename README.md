@@ -81,7 +81,11 @@ Traditional pick-and-place systems rely on fixed positions and pre-programmed pa
 
 ## 🎬 Demo Video
 
-https://github.com/user-attachments/assets/241f8717-51c9-49bb-8f73-4b1a71cf1a6a
+
+https://github.com/user-attachments/assets/82869368-8ee8-4fc4-97dc-2b96c828437a
+
+
+
 
 _The robot autonomously detects colored boxes on tables and places them in matching colored baskets_
 
@@ -152,13 +156,11 @@ Dexter-vision-based-pick-place-robotic-arm/
 │   │   ├── scripts/                       # Python control scripts
 │   │   │   ├── vision_pick_place.py       # ⭐ Main vision system
 │   │   │   ├── object_detector.py         # Color detection module
-│   │   │   ├── pick_and_place_contact.py  # Contact-based demo
 │   │   │   ├── wait_and_spawn_controllers.py  # ⚙️ Controller spawner
 │   │   │   ├── initial_detach.py          # ⚙️ Startup detachment
 │   │   │   ├── pose_to_tf_relay.py        # TF broadcaster
 │   │   │   ├── rviz_interactive_control.py # Interactive markers
-│   │   │   ├── ik_utils.py                # IK utilities
-│   │   │   └── vision_utils.py            # Vision utilities
+│   │   │   └── ik_utils.py                # IK utilities
 │   │   ├── urdf/                          # Robot description
 │   │   │   └── robo_arm/                  # URDF files
 │   │   ├── meshes/                        # 3D models (STL/OBJ)
