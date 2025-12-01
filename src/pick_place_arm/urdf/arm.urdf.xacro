@@ -36,7 +36,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file:///home/raj/robo_ws/install/pick_place_arm/share/pick_place_arm/meshes/base_link.STL"
+                    filename="package://pick_place_arm/meshes/base_link.STL"
                     scale="1 1 1" />
             </geometry>
             <material
@@ -52,7 +52,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file:///home/raj/robo_ws/install/pick_place_arm/share/pick_place_arm/meshes/base_link.STL"
+                    filename="package://pick_place_arm/meshes/base_link.STL"
                     scale="1 1 1" />
             </geometry>
         </collision>
@@ -81,7 +81,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file:///home/raj/robo_ws/install/pick_place_arm/share/pick_place_arm/meshes/l1.STL"
+                    filename="package://pick_place_arm/meshes/l1.STL"
                     scale="1 1 1" />
             </geometry>
             <material
@@ -96,7 +96,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file:///home/raj/robo_ws/install/pick_place_arm/share/pick_place_arm/meshes/l1.STL"
+                    filename="package://pick_place_arm/meshes/l1.STL"
                     scale="1 1 1" />
             </geometry>
         </collision>
@@ -159,7 +159,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file:///home/raj/robo_ws/install/pick_place_arm/share/pick_place_arm/meshes/l2.STL"
+                    filename="package://pick_place_arm/meshes/l2.STL"
                     scale="1 1 1" />
             </geometry>
             <material
@@ -174,7 +174,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file:///home/raj/robo_ws/install/pick_place_arm/share/pick_place_arm/meshes/l2.STL"
+                    filename="package://pick_place_arm/meshes/l2.STL"
                     scale="1 1 1" />
             </geometry>
         </collision>
@@ -237,7 +237,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file:///home/raj/robo_ws/install/pick_place_arm/share/pick_place_arm/meshes/l3.STL"
+                    filename="package://pick_place_arm/meshes/l3.STL"
                     scale="1 1 1" />
             </geometry>
             <material
@@ -252,7 +252,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file:///home/raj/robo_ws/install/pick_place_arm/share/pick_place_arm/meshes/l3.STL"
+                    filename="package://pick_place_arm/meshes/l3.STL"
                     scale="1 1 1" />
             </geometry>
         </collision>
@@ -315,7 +315,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file:///home/raj/robo_ws/install/pick_place_arm/share/pick_place_arm/meshes/l4.STL"
+                    filename="package://pick_place_arm/meshes/l4.STL"
                     scale="1 1 1" />
             </geometry>
             <material
@@ -330,7 +330,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file:///home/raj/robo_ws/install/pick_place_arm/share/pick_place_arm/meshes/l4.STL"
+                    filename="package://pick_place_arm/meshes/l4.STL"
                     scale="1 1 1" />
             </geometry>
         </collision>
@@ -393,7 +393,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file:///home/raj/robo_ws/install/pick_place_arm/share/pick_place_arm/meshes/l5.STL"
+                    filename="package://pick_place_arm/meshes/l5.STL"
                     scale="1 1 1" />
             </geometry>
             <material
@@ -408,7 +408,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file:///home/raj/robo_ws/install/pick_place_arm/share/pick_place_arm/meshes/l5.STL"
+                    filename="package://pick_place_arm/meshes/l5.STL"
                     scale="1 1 1" />
             </geometry>
         </collision>
@@ -471,7 +471,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file:///home/raj/robo_ws/install/pick_place_arm/share/pick_place_arm/meshes/l6.STL"
+                    filename="package://pick_place_arm/meshes/l6.STL"
                     scale="1 1 1" />
             </geometry>
             <material
@@ -486,7 +486,7 @@
                 rpy="0 0 0" />
             <geometry>
                 <mesh
-                    filename="file:///home/raj/robo_ws/install/pick_place_arm/share/pick_place_arm/meshes/l6.STL"
+                    filename="package://pick_place_arm/meshes/l6.STL"
                     scale="1 1 1" />
             </geometry>
         </collision>
@@ -536,7 +536,7 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file:///home/raj/robo_ws/install/pick_place_arm/share/pick_place_arm/meshes/l7l.STL" scale="1 1 1" />
+                <mesh filename="package://pick_place_arm/meshes/l7l.STL" scale="1 1 1" />
             </geometry>
             <material name="">
                 <color rgba="1 1 1 1" />
@@ -545,7 +545,7 @@
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file:///home/raj/robo_ws/install/pick_place_arm/share/pick_place_arm/meshes/l7l.STL" scale="1 1 1" />
+                <mesh filename="package://pick_place_arm/meshes/l7l.STL" scale="1 1 1" />
             </geometry>
         </collision>
     </link>
@@ -588,7 +588,7 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file:///home/raj/robo_ws/install/pick_place_arm/share/pick_place_arm/meshes/l7r.STL" scale="1 1 1" />
+                <mesh filename="package://pick_place_arm/meshes/l7r.STL" scale="1 1 1" />
             </geometry>
             <material name="">
                 <color rgba="1 1 1 1" />
@@ -597,7 +597,7 @@
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file:///home/raj/robo_ws/install/pick_place_arm/share/pick_place_arm/meshes/l7r.STL" scale="1 1 1" />
+                <mesh filename="package://pick_place_arm/meshes/l7r.STL" scale="1 1 1" />
             </geometry>
         </collision>
     </link>
@@ -692,7 +692,7 @@
         <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
             <robot_param>robot_description</robot_param>
             <robot_param_node>robot_state_publisher</robot_param_node>
-            <parameters>/home/raj/robo_ws/install/pick_place_arm/share/pick_place_arm/config/ros2_control.yaml</parameters>
+            <parameters>$(find pick_place_arm)/config/ros2_control.yaml</parameters>
         </plugin>
     </gazebo>
 
