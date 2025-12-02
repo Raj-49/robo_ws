@@ -326,8 +326,7 @@ rosdep update
 
 ```bash
 # Create workspace
-mkdir -p ~/Dexter-vision-based-pick-place-robotic-arm/src
-cd ~/Dexter-vision-based-pick-place-robotic-arm/src
+You can make and clone to any folder so go inside that folder and open terminal 
 
 # Clone repository
 git clone https://github.com/Raj-49/Dexter-vision-based-pick-place-robotic-arm.git
@@ -422,11 +421,6 @@ Open a **new terminal**:
 
 ```bash
 source ~/Dexter-vision-based-pick-place-robotic-arm/install/setup.bash
-
-# Option 1: Run from source (use correct nested path)
-python3 src/Dexter-vision-based-pick-place-robotic-arm/src/pick_place_arm/scripts/vision_pick_place.py
-
-# Option 2: Run from installed package (recommended)
 ros2 run pick_place_arm vision_pick_place.py
 ```
 
