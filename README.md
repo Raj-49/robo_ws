@@ -2,7 +2,11 @@
 
 [![ROS2](https://img.shields.io/badge/ROS2-Humble-blue)](https://docs.ros.org/en/humble/)
 [![Gazebo](https://img.shields.io/badge/Gazebo-Fortress%206.17.0-orange)](https://gazebosim.org/docs/fortress)
+![MoveIt2](https://img.shields.io/badge/MoveIt2-Planning-brightgreen)
 [![Python](https://img.shields.io/badge/Python-3.10-green)](https://www.python.org/)
+![OpenCV](https://img.shields.io/badge/OpenCV-Vision-red)
+![rviz2](https://img.shields.io/badge/RViz2-Visualization-ff69b4)
+![ros2_control](https://img.shields.io/badge/ros2_control-Hardware_Interface-lightgrey)
 [![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
 [![Build](https://img.shields.io/badge/Build-Passing-brightgreen)]()
 
