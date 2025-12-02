@@ -236,9 +236,9 @@ sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o
 
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(source /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
 
-# Install ROS2 packages
+# Install ROS2 packages (includes ros-base and development tools)
 sudo apt update
-sudo apt install ros-humble-desktop
+sudo apt install ros-humble-desktop ros-humble-ros-base
 sudo apt install ros-dev-tools
 
 # Source ROS2 environment
@@ -246,85 +246,146 @@ echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
 source /opt/ros/humble/setup.bash
 ```
 
-#### 2. Install Gazebo Fortress
+#### 2. Install Gazebo Fortress & ROS2 Integration
 
 ```bash
+# Install Gazebo Fortress and ROS-Gazebo bridge packages
 sudo apt-get update
-sudo apt-get install ros-humble-ros-gz
-sudo apt-get install ros-humble-ros-gz-sim
-sudo apt-get install ros-humble-ros-gz-bridge
-sudo apt-get install ignition-fortress
+sudo apt-get install -y \
+    ros-humble-ros-gz \
+    ros-humble-ros-gz-sim \
+    ros-humble-ros-gz-bridge \
+    ros-humble-ros-gz-interfaces \
+    ignition-fortress
+
+# Install gz_ros2_control plugin (CRITICAL for joint control)
+sudo apt install ros-humble-gz-ros2-control
 ```
 
-#### 3. Install MoveIt2
+#### 3. Install MoveIt2 & Motion Planning
 
 ```bash
-sudo apt install ros-humble-moveit
+# Install MoveIt2 core and plugins
+sudo apt install -y \
+    ros-humble-moveit \
+    ros-humble-moveit-ros-planning-interface \
+    ros-humble-moveit-simple-controller-manager
 ```
 
-#### 4. Install ROS2 Controllers and Additional Packages
+#### 4. Install ROS2 Controllers & Additional Packages
 
 ```bash
-sudo apt install ros-humble-ros2-control
-sudo apt install ros-humble-ros2-controllers
-sudo apt install ros-humble-controller-manager
-sudo apt install ros-humble-joint-state-publisher
-sudo apt install ros-humble-joint-state-publisher-gui
-sudo apt install ros-humble-xacro
-sudo apt install ros-humble-cv-bridge
+# Install controller packages
+sudo apt install -y \
+    ros-humble-ros2-control \
+    ros-humble-ros2-controllers \
+    ros-humble-controller-manager \
+    ros-humble-joint-state-publisher \
+    ros-humble-joint-state-publisher-gui \
+    ros-humble-xacro
+
+# Install launch system (CRITICAL - fixes "ros2 launch" command not found)
+sudo apt install -y \
+    ros-humble-launch-ros \
+    ros-humble-launch
+
+# Install vision and image tools
+sudo apt install -y \
+    ros-humble-cv-bridge \
+    ros-humble-rqt-image-view \
+    ros-humble-image-transport
 ```
 
 #### 5. Install Python Dependencies
 
 ```bash
 sudo apt install python3-pip
+
+# Install OpenCV
 pip3 install opencv-python
-pip3 install numpy
+
+# CRITICAL: Install NumPy 1.x (NOT 2.x) for cv_bridge compatibility
+pip3 install 'numpy<2'
 ```
+
+> **⚠️ Important**: ROS2 Humble's `cv_bridge` was compiled with NumPy 1.x. Using NumPy 2.x will cause crashes with error: `AttributeError: _ARRAY_API not found`. Always use `numpy<2`.
 
 #### 6. Install Build Tools
 
 ```bash
 sudo apt install python3-colcon-common-extensions python3-rosdep
+
+# Initialize rosdep (skip if already done)
 sudo rosdep init
 rosdep update
 ```
 
 ### Project Installation
 
-#### 7. Create Workspace
+#### 7. Create Workspace & Clone Repository
 
 ```bash
+# Create workspace
 mkdir -p ~/Dexter-vision-based-pick-place-robotic-arm/src
 cd ~/Dexter-vision-based-pick-place-robotic-arm/src
+
+# Clone repository
+git clone https://github.com/Raj-49/Dexter-vision-based-pick-place-robotic-arm.git
 ```
 
-#### 8. Clone Repository
-
-```bash
-git clone https://github.com/Raj-49/Dexter-vision-based-pick-place-robotic-arm.git .
-# Or if cloning from a specific branch:
-git clone -b Vision_based_pick-plce https://github.com/Raj-49/Dexter-vision-based-pick-place-robotic-arm.git .
-```
-
-#### 9. Install Project Dependencies
+#### 8. Install Project Dependencies
 
 ```bash
 cd ~/Dexter-vision-based-pick-place-robotic-arm
+
+# Install dependencies using rosdep
 rosdep install --from-paths src --ignore-src -r -y
 ```
 
-#### 10. Build the Workspace
+#### 9. Build the Workspace
 
 ```bash
+# CRITICAL: Source ROS2 BEFORE building
+source /opt/ros/humble/setup.bash
+
+# Build
 colcon build
+
+# Source the workspace overlay
 source install/setup.bash
 ```
 
-**Note**: Add `source ~/Dexter-vision-based-pick-place-robotic-arm/install/setup.bash` to your `~/.bashrc` for automatic sourcing:
+> **⚠️ Common Build Error**: If you get `CMake Error: Could not find a package configuration file provided by "ament_cmake"`, you forgot to source `/opt/ros/humble/setup.bash` before running `colcon build`. Always source the ROS distro first!
+
+#### 10. Setup Auto-Sourcing (Optional but Recommended)
+
+Add workspace sourcing to your `.bashrc`:
 
 ```bash
+echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
 echo "source ~/Dexter-vision-based-pick-place-robotic-arm/install/setup.bash" >> ~/.bashrc
+source ~/.bashrc
+```
+
+> **Note**: In new terminals, always source in the correct order:
+> 1. First: `/opt/ros/humble/setup.bash` (base ROS2)
+> 2. Then: `~/Dexter-vision-based-pick-place-robotic-arm/install/setup.bash` (your workspace)
+
+### Verification
+
+Test your installation:
+
+```bash
+# Check ROS2 distro
+echo $ROS_DISTRO
+# Should output: humble
+
+# Check if launch command works
+ros2 launch --help
+
+# Check if workspace packages are visible
+ros2 pkg list | grep pick_place_arm
+# Should output: pick_place_arm and arm_moveit_config
 ```
 
 ---
@@ -361,7 +422,12 @@ Open a **new terminal**:
 
 ```bash
 source ~/Dexter-vision-based-pick-place-robotic-arm/install/setup.bash
-python3 src/pick_place_arm/scripts/vision_pick_place.py
+
+# Option 1: Run from source (use correct nested path)
+python3 src/Dexter-vision-based-pick-place-robotic-arm/src/pick_place_arm/scripts/vision_pick_place.py
+
+# Option 2: Run from installed package (recommended)
+ros2 run pick_place_arm vision_pick_place.py
 ```
 
 #### 3. View the Annotated Camera Feed (Optional)
@@ -369,6 +435,7 @@ python3 src/pick_place_arm/scripts/vision_pick_place.py
 Open another **new terminal**:
 
 ```bash
+source ~/Dexter-vision-based-pick-place-robotic-arm/install/setup.bash
 ros2 run rqt_image_view rqt_image_view
 ```
 
@@ -1247,19 +1314,142 @@ RViz MoveIt Plugin
 
 ## 🔍 Troubleshooting & FAQ
 
-### Common Issues
+### Build & Installation Issues
 
-#### 1. Controllers Not Active
+#### 1. CMake Error: "ament_cmake" not found
+
+**Symptom:**
+```
+CMake Error at CMakeLists.txt:9 (find_package):
+  By not providing "Findament_cmake.cmake" in CMAKE_MODULE_PATH...
+```
+
+**Root Cause:** You didn't source the ROS2 environment before building.
+
+**Solution:**
+```bash
+source /opt/ros/humble/setup.bash
+colcon build
+source install/setup.bash
+```
+
+**Always remember:** Source the ROS2 distro **before** `colcon build`, not after!
+
+---
+
+#### 2. "ros2 launch" command not found
+
+**Symptom:**
+```
+ros2: error: argument: invalid choice: 'launch'
+```
+
+**Root Cause:** ROS2 launch packages not installed.
+
+**Solution:**
+```bash
+sudo apt install ros-humble-launch-ros ros-humble-launch
+```
+
+Then source and verify:
+```bash
+source /opt/ros/humble/setup.bash
+ros2 launch --help
+```
+
+---
+
+#### 3. NumPy Version Crash - "AttributeError: _ARRAY_API not found"
+
+**Symptom:**
+```
+A module that was compiled using NumPy 1.x cannot be run in NumPy 2.2.6...
+AttributeError: _ARRAY_API not found
+Segmentation fault (core dumped)
+```
+
+**Root Cause:** ROS2 Humble's `cv_bridge` was compiled with NumPy 1.x but you have NumPy 2.x installed.
+
+**Solution:**
+```bash
+pip3 install 'numpy<2'
+```
+
+Verify version:
+```bash
+python3 -c "import numpy; print(numpy.__version__)"
+# Should show: 1.x.x (not 2.x.x)
+```
+
+---
+
+#### 4. Failed to load gz_ros2_control plugin
+
+**Symptom:**
+```
+[Err] [SystemLoader.cc:94] Failed to load system plugin [gz_ros2_control-system] : couldn't find shared library.
+```
+
+**Root Cause:** Missing Gazebo ros2_control plugin.
+
+**Solution:**
+```bash
+sudo apt install ros-humble-gz-ros2-control
+```
+
+Rebuild and relaunch:
+```bash
+source /opt/ros/humble/setup.bash
+cd ~/Dexter-vision-based-pick-place-robotic-arm
+colcon build
+source install/setup.bash
+ros2 launch pick_place_arm unified_gz_moveit.launch.py
+```
+
+---
+
+#### 5. Mesh files not found - "Unable to find file[...meshes/base_link.STL]"
+
+**Symptom:**
+```
+[Err] [SystemPaths.cc:378] Unable to find file with URI [file:///.../meshes/base_link.STL]
+```
+
+**Root Cause:** Workspace not properly sourced or build incomplete.
+
+**Solution:**
+```bash
+# Clean build
+cd ~/Dexter-vision-based-pick-place-robotic-arm
+rm -rf build/ install/ log/
+
+# Rebuild
+source /opt/ros/humble/setup.bash
+colcon build
+source install/setup.bash
+```
+
+---
+
+### Runtime Issues
+
+#### 6. Controllers Not Active
 
 **Symptom:** `ros2 control list_controllers` shows controllers as "inactive"
 
 **Solution:**
 
-- Wait 15-20 seconds after launch
+- Wait 15-20 seconds after launch for initialization
 - Check `wait_and_spawn_controllers.py` is running
 - Verify Gazebo is fully initialized
+- Check controller_manager is running:
+  ```bash
+  ros2 service list | grep controller_manager
+  ```
 
-#### 2. Box Not Detected
+---
+
+#### 7. Box Not Detected
 
 **Symptom:** Vision system doesn't detect a colored box
 
@@ -1267,9 +1457,15 @@ RViz MoveIt Plugin
 
 - Ensure box is in bottom 60% of camera view (table zone)
 - Check color thresholds in `object_detector.py`
-- View `/camera/image_annotated` to debug
+- View annotated feed to debug:
+  ```bash
+  ros2 run rqt_image_view rqt_image_view
+  # Select: /camera/image_annotated
+  ```
 
-#### 3. Motion Plan Failed
+---
+
+#### 8. Motion Plan Failed
 
 **Symptom:** MoveIt fails to find a valid path
 
@@ -1277,9 +1473,12 @@ RViz MoveIt Plugin
 
 - Robot might be in singularity
 - Check for collisions in RViz
+- Increase planning time in MoveIt
 - Restart simulation: `Ctrl+C` and relaunch
 
-#### 4. Object "Flies Away" When Grasped
+---
+
+#### 9. Object "Flies Away" When Grasped
 
 **Symptom:** Box launches into the air when gripper closes
 
@@ -1288,16 +1487,93 @@ RViz MoveIt Plugin
 - This is a physics simulation artifact
 - Ensure "Minimal Close" strategy is active (`-0.010` radians)
 - Check gripper controller parameters in `gripper_params.yaml`
+- Reduce gripper closing speed
 
-#### 5. Gripper Won't Release Object
+---
+
+#### 10. Gripper Won't Release Object
 
 **Symptom:** Object stays attached after detach command
 
 **Solution:**
 
 - Ensure proper detachment sequence: Detach → Wait → Open → Move
-- Check `initial_detach.py` ran at startup
-- Manually publish: `ros2 topic pub /[color]_box/detach std_msgs/Empty`
+- Check `initial_detach.py` ran at startup (15 seconds after launch)
+- Manually publish detach:
+  ```bash
+  ros2 topic pub --once /red_box/detach std_msgs/Empty
+  ```
+
+---
+
+#### 11. RViz2 Crashes on Launch
+
+**Symptom:**
+```
+/opt/ros/humble/lib/rviz2/rviz2: symbol lookup error: ...libpthread.so.0: undefined symbol: __libc_pthread_init
+```
+
+**Root Cause:** Snap-installed RViz2 has library conflicts.
+
+**Solution 1 (Quick):** Launch without RViz:
+```bash
+ros2 launch pick_place_arm unified_gz_moveit.launch.py start_rviz:=false
+```
+
+**Solution 2 (Permanent):** Remove snap RViz2, install from apt:
+```bash
+sudo snap remove rviz2
+sudo apt install ros-humble-rviz2
+```
+
+---
+
+### Verification Commands
+
+Check your installation health:
+
+```bash
+# Check ROS2 distro
+echo $ROS_DISTRO  # Should output: humble
+
+# Check launch is available
+ros2 launch --help
+
+# List installed packages
+ros2 pkg list | grep pick_place
+
+# Check NumPy version
+python3 -c "import numpy; print(numpy.__version__)"  # Should be 1.x
+
+# Verify workspace packages
+ros2 pkg prefix pick_place_arm
+ros2 pkg prefix arm_moveit_config
+```
+
+---
+
+### Clean Reinstall
+
+If all else fails, clean reinstall:
+
+```bash
+# 1. Remove workspace
+cd ~
+rm -rf Dexter-vision-based-pick-place-robotic-arm
+
+# 2. Fix Python packages
+pip3 install 'numpy<2' --force-reinstall
+
+# 3. Follow installation guide from step 7 onwards
+mkdir -p ~/Dexter-vision-based-pick-place-robotic-arm/src
+cd ~/Dexter-vision-based-pick-place-robotic-arm/src
+git clone https://github.com/Raj-49/Dexter-vision-based-pick-place-robotic-arm.git
+cd ..
+source /opt/ros/humble/setup.bash
+rosdep install --from-paths src --ignore-src -r -y
+colcon build
+source install/setup.bash
+```
 
 ### FAQ
 

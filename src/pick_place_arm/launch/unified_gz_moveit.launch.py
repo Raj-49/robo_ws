@@ -1,6 +1,7 @@
 import os
 import shutil
 import subprocess
+import tempfile
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, GroupAction, TimerAction, ExecuteProcess, SetEnvironmentVariable
@@ -41,20 +42,21 @@ def generate_launch_description():
     headless_arg = DeclareLaunchArgument('headless', default_value='false', description='Headless RViz via xvfb (SSH/no DISPLAY)')
     use_sim_time_arg = DeclareLaunchArgument('use_sim_time', default_value='true', description='Use ROS simulated time (/clock) for nodes')
 
-    # Use source xacro file in workspace src to generate an unscaled URDF file for Gazebo spawn------------------------------------------------------
+    # Use installed package xacro file to generate an unscaled URDF file for Gazebo spawn------------------------------------------------------------
     
-    # Get workspace root dynamically (works on any system)
+    # Get xacro from installed package share directory
     pick_place_pkg_path = get_package_share_directory('pick_place_arm')
-    # Navigate up from install/pick_place_arm/share/pick_place_arm to workspace root
-    workspace_root = os.path.abspath(os.path.join(pick_place_pkg_path, '..', '..', '..', '..'))
-    arm_xacro_src = os.path.join(workspace_root, 'src', 'pick_place_arm', 'urdf', 'arm.urdf.xacro')
-    unscaled_urdf_path = '/tmp/pick_place_arm.urdf'
+    arm_xacro_src = os.path.join(pick_place_pkg_path, 'urdf', 'arm.urdf.xacro')
+    
+    # Create temporary file for the generated URDF
+    unscaled_urdf_fd, unscaled_urdf_path = tempfile.mkstemp(suffix='.urdf', prefix='pick_place_arm_')
     try:
         unscaled_urdf = subprocess.check_output(['xacro', arm_xacro_src, 'SCALE:=1', 'BASE_YAW:=0']).decode('utf-8')
-        with open(unscaled_urdf_path, 'w') as f:
+        with os.fdopen(unscaled_urdf_fd, 'w') as f:
             f.write(unscaled_urdf)
     except Exception as e:
-        print('Warning: failed to generate unscaled URDF from src xacro:', e)
+        os.close(unscaled_urdf_fd)
+        print('Warning: failed to generate unscaled URDF from installed xacro:', e)
     
     # Set up Gazebo resource path to include our models directory------------------------------------------------------------------------------------
     
@@ -215,11 +217,13 @@ def generate_launch_description():
     )
     rviz_headless = None
     if has_xvfb:
+        temp_log_dir = os.path.join(tempfile.gettempdir(), 'roslogs')
+        os.makedirs(temp_log_dir, exist_ok=True)
         headless_env = dict(base_env)
-        headless_env['ROS_LOG_DIR'] = '/tmp/roslogs'
-        headless_env['RCUTILS_LOGGING_DIRECTORY'] = '/tmp/roslogs'
+        headless_env['ROS_LOG_DIR'] = temp_log_dir
+        headless_env['RCUTILS_LOGGING_DIRECTORY'] = temp_log_dir
         headless_env['RCUTILS_LOGGING_USE_STDOUT'] = '1'
-        headless_env['HOME'] = os.environ.get('HOME', '/tmp')
+        headless_env['HOME'] = os.environ.get('HOME', tempfile.gettempdir())
         rviz_headless = Node(
             package='rviz2', executable='rviz2', name='rviz2_headless', output='screen',
             arguments=['-d', rviz_config_path],
