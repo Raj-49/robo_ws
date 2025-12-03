@@ -159,7 +159,7 @@ Dexter-vision-based-pick-place-robotic-arm/
 │   │   │   ├── wait_and_spawn_controllers.py  # ⚙️ Controller spawner
 │   │   │   ├── initial_detach.py          # ⚙️ Startup detachment
 │   │   │   ├── pose_to_tf_relay.py        # TF broadcaster
-│   │   │   ├── rviz_model_visualizer.py   # 3D Interactive markers 
+│   │   │   ├── rviz_model_visualizer.py   # 3D Interactive markers
 │   │   │   └── ik_utils.py                # IK utilities
 │   │   ├── urdf/                          # Robot description
 │   │   │   └── robo_arm/                  # URDF files
@@ -326,7 +326,7 @@ rosdep update
 
 ```bash
 # Create workspace
-You can make and clone to any folder so go inside that folder and open terminal 
+You can make and clone to any folder so go inside that folder and open terminal
 
 # Clone repository
 git clone https://github.com/Raj-49/Dexter-vision-based-pick-place-robotic-arm.git
@@ -401,6 +401,7 @@ ros2 pkg list | grep pick_place_arm
 Open a terminal and launch the complete system:
 
 ```bash
+cd ~/Dexter-vision-based-pick-place-robotic-arm
 source ~/Dexter-vision-based-pick-place-robotic-arm/install/setup.bash
 ros2 launch pick_place_arm unified_gz_moveit.launch.py
 ```
@@ -465,7 +466,6 @@ The robot will:
 5. Detach and open gripper
 6. Return to home position
 7. Repeat for next color in sequence
-
 
 ---
 
