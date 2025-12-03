@@ -85,11 +85,7 @@ Traditional pick-and-place systems rely on fixed positions and pre-programmed pa
 
 ## 🎬 Demo Video
 
-
 https://github.com/user-attachments/assets/82869368-8ee8-4fc4-97dc-2b96c828437a
-
-
-
 
 _The robot autonomously detects colored boxes on tables and places them in matching colored baskets_
 
@@ -163,7 +159,7 @@ Dexter-vision-based-pick-place-robotic-arm/
 │   │   │   ├── wait_and_spawn_controllers.py  # ⚙️ Controller spawner
 │   │   │   ├── initial_detach.py          # ⚙️ Startup detachment
 │   │   │   ├── pose_to_tf_relay.py        # TF broadcaster
-│   │   │   ├── rviz_interactive_control.py # Interactive markers
+│   │   │   ├── rviz_model_visualizer.py   # 3D Interactive markers 
 │   │   │   └── ik_utils.py                # IK utilities
 │   │   ├── urdf/                          # Robot description
 │   │   │   └── robo_arm/                  # URDF files
@@ -371,6 +367,7 @@ source ~/.bashrc
 ```
 
 > **Note**: In new terminals, always source in the correct order:
+>
 > 1. First: `/opt/ros/humble/setup.bash` (base ROS2)
 > 2. Then: `~/Dexter-vision-based-pick-place-robotic-arm/install/setup.bash` (your workspace)
 
@@ -468,6 +465,7 @@ The robot will:
 5. Detach and open gripper
 6. Return to home position
 7. Repeat for next color in sequence
+
 
 ---
 
@@ -1264,8 +1262,11 @@ RViz MoveIt Plugin
 - **Camera ↔ Vision**: Images @ 30Hz, detections @ 10Hz
 - **Vision ↔ Gazebo**: Attach/detach → physics constraints
 - **All nodes ↔ /clock**: Synchronized time @ 1000Hz
+
 ---
+
 ---
+
 <a id="results-and-performance"></a>
 
 ## 📊 Results & Performance
@@ -1317,6 +1318,7 @@ RViz MoveIt Plugin
 #### 1. CMake Error: "ament_cmake" not found
 
 **Symptom:**
+
 ```
 CMake Error at CMakeLists.txt:9 (find_package):
   By not providing "Findament_cmake.cmake" in CMAKE_MODULE_PATH...
@@ -1325,6 +1327,7 @@ CMake Error at CMakeLists.txt:9 (find_package):
 **Root Cause:** You didn't source the ROS2 environment before building.
 
 **Solution:**
+
 ```bash
 source /opt/ros/humble/setup.bash
 colcon build
@@ -1338,6 +1341,7 @@ source install/setup.bash
 #### 2. "ros2 launch" command not found
 
 **Symptom:**
+
 ```
 ros2: error: argument: invalid choice: 'launch'
 ```
@@ -1345,11 +1349,13 @@ ros2: error: argument: invalid choice: 'launch'
 **Root Cause:** ROS2 launch packages not installed.
 
 **Solution:**
+
 ```bash
 sudo apt install ros-humble-launch-ros ros-humble-launch
 ```
 
 Then source and verify:
+
 ```bash
 source /opt/ros/humble/setup.bash
 ros2 launch --help
@@ -1357,9 +1363,10 @@ ros2 launch --help
 
 ---
 
-#### 3. NumPy Version Crash - "AttributeError: _ARRAY_API not found"
+#### 3. NumPy Version Crash - "AttributeError: \_ARRAY_API not found"
 
 **Symptom:**
+
 ```
 A module that was compiled using NumPy 1.x cannot be run in NumPy 2.2.6...
 AttributeError: _ARRAY_API not found
@@ -1369,11 +1376,13 @@ Segmentation fault (core dumped)
 **Root Cause:** ROS2 Humble's `cv_bridge` was compiled with NumPy 1.x but you have NumPy 2.x installed.
 
 **Solution:**
+
 ```bash
 pip3 install 'numpy<2'
 ```
 
 Verify version:
+
 ```bash
 python3 -c "import numpy; print(numpy.__version__)"
 # Should show: 1.x.x (not 2.x.x)
@@ -1384,6 +1393,7 @@ python3 -c "import numpy; print(numpy.__version__)"
 #### 4. Failed to load gz_ros2_control plugin
 
 **Symptom:**
+
 ```
 [Err] [SystemLoader.cc:94] Failed to load system plugin [gz_ros2_control-system] : couldn't find shared library.
 ```
@@ -1391,11 +1401,13 @@ python3 -c "import numpy; print(numpy.__version__)"
 **Root Cause:** Missing Gazebo ros2_control plugin.
 
 **Solution:**
+
 ```bash
 sudo apt install ros-humble-gz-ros2-control
 ```
 
 Rebuild and relaunch:
+
 ```bash
 source /opt/ros/humble/setup.bash
 cd ~/Dexter-vision-based-pick-place-robotic-arm
@@ -1409,6 +1421,7 @@ ros2 launch pick_place_arm unified_gz_moveit.launch.py
 #### 5. Mesh files not found - "Unable to find file[...meshes/base_link.STL]"
 
 **Symptom:**
+
 ```
 [Err] [SystemPaths.cc:378] Unable to find file with URI [file:///.../meshes/base_link.STL]
 ```
@@ -1416,6 +1429,7 @@ ros2 launch pick_place_arm unified_gz_moveit.launch.py
 **Root Cause:** Workspace not properly sourced or build incomplete.
 
 **Solution:**
+
 ```bash
 # Clean build
 cd ~/Dexter-vision-based-pick-place-robotic-arm
@@ -1507,6 +1521,7 @@ source install/setup.bash
 #### 11. RViz2 Crashes on Launch
 
 **Symptom:**
+
 ```
 /opt/ros/humble/lib/rviz2/rviz2: symbol lookup error: ...libpthread.so.0: undefined symbol: __libc_pthread_init
 ```
@@ -1514,11 +1529,13 @@ source install/setup.bash
 **Root Cause:** Snap-installed RViz2 has library conflicts.
 
 **Solution 1 (Quick):** Launch without RViz:
+
 ```bash
 ros2 launch pick_place_arm unified_gz_moveit.launch.py start_rviz:=false
 ```
 
 **Solution 2 (Permanent):** Remove snap RViz2, install from apt:
+
 ```bash
 sudo snap remove rviz2
 sudo apt install ros-humble-rviz2

@@ -46,12 +46,15 @@ class PoseToTFRelay(Node):
             # Check if this is a model root transform we care about
             # Gazebo bridge usually publishes model names as child_frame_id
             if transform.child_frame_id in self.target_frames:
-                self.get_logger().debug(f"Transform {transform.child_frame_id} is a target frame.")
+                self.get_logger().info(f"Found target frame: {transform.child_frame_id}", throttle_duration_sec=5.0)
                 
                 # Fix frame_id if empty (Gazebo often leaves it empty for world-relative poses)
                 if not transform.header.frame_id:
                     self.get_logger().debug(f"Fixing empty frame_id for {transform.child_frame_id} to 'world'.")
                     transform.header.frame_id = 'world'
+                
+                # Update timestamp to current time
+                transform.header.stamp = self.get_clock().now().to_msg()
                 
                 clean_tf_msg.transforms.append(transform)
                 self.get_logger().debug(f"Added transform for {transform.child_frame_id} to clean_tf_msg.")
@@ -59,10 +62,10 @@ class PoseToTFRelay(Node):
                 self.get_logger().debug(f"Transform {transform.child_frame_id} is not a target frame. Skipping.")
         
         if clean_tf_msg.transforms:
-            self.get_logger().info(f"Publishing {len(clean_tf_msg.transforms)} clean transforms", throttle_duration_sec=2.0)
+            self.get_logger().info(f"Publishing {len(clean_tf_msg.transforms)} clean transforms to /tf", throttle_duration_sec=2.0)
             self.pub.publish(clean_tf_msg)
         else:
-            self.get_logger().debug("No target transforms found to publish.")
+            self.get_logger().warn("No target transforms found to publish. Check if models exist in Gazebo.", throttle_duration_sec=5.0)
 
 def main():
     rclpy.init()

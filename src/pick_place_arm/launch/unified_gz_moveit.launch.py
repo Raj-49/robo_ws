@@ -268,12 +268,13 @@ def generate_launch_description():
         # Initial detach to clear any pre-existing attachments
         initial_detach_runner,
         
-        # RViz Interactive Control (Visualization & Attach/Detach)
+        # RViz 3D Model Visualizer (Gazebo-accurate visual markers)
         ExecuteProcess(
-            cmd=['python3', os.path.join(get_package_share_directory('pick_place_arm'), 'scripts', 'rviz_interactive_control.py')],
+            cmd=['python3', os.path.join(get_package_share_directory('pick_place_arm'), 'scripts', 'rviz_model_visualizer.py')],
             output='screen'
         ),
-        # TF Relay (Fixes Gazebo->TF spam)
+        
+        # TF Relay (Publishes model TF frames for RViz visualization)
         ExecuteProcess(
             cmd=['python3', os.path.join(get_package_share_directory('pick_place_arm'), 'scripts', 'pose_to_tf_relay.py')],
             output='screen'

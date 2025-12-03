@@ -35,7 +35,7 @@ install(
     scripts/wait_and_spawn_controllers.py
     scripts/initial_detach.py
     scripts/pose_to_tf_relay.py
-    scripts/rviz_interactive_control.py
+    scripts/rviz_model_visualizer.py
   DESTINATION share/${PROJECT_NAME}/scripts
 )
 

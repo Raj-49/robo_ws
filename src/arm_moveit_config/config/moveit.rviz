@@ -20,7 +20,7 @@ Visualization Manager:
       Value: true
     - Class: rviz_default_plugins/MarkerArray
       Name: MarkerArray
-      Topic: /visualization_marker_array
+      Topic: /model_markers
       Value: true
     - Class: moveit_rviz_plugin/MotionPlanning
       Name: MotionPlanning
