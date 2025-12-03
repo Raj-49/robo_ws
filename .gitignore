@@ -1,0 +1,32 @@
+# ROS 2 Build Artifacts
+build/
+install/
+log/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Unrelated packages (keep only pick_place_arm and arm_moveit_config)
+src/robo_vision/
+
+# Temporary files
+*.tmp
+*.bak
+
+#readme
+TODO.md

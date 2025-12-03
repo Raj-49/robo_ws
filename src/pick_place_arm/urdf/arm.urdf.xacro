@@ -1,0 +1,691 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="pick_place_arm">
+
+    <xacro:arg name="gazebo_control" default="true" />
+    <!-- Add dummy world link and fixed base_joint so base_link is not the URDF root
+         (matches SRDF which declares base_joint and avoids KDL root-inertia warning) -->
+    <link name="world" />
+    <joint name="base_joint" type="fixed">
+        <parent link="world" />
+        <child link="base_link" />
+        <!-- base_link at world origin (z=0) -->
+        <origin rpy="0 0 0" xyz="0 0 0" />
+    </joint>
+
+    <!-- base link/joint -->
+    <link
+        name="base_link">
+        <inertial>
+            <origin
+                xyz="0.032059662853705 1.38777878078145E-16 0.341229394008098"
+                rpy="0 0 0" />
+            <mass
+                value="0.78517256166207" />
+            <inertia
+                ixx="0.0070784931397645"
+                ixy="-4.56743079844887E-18"
+                ixz="-0.000731711350776652"
+                iyy="0.00836971536713227"
+                iyz="-2.53429520874075E-18"
+                izz="0.00132642251104824" />
+        </inertial>
+        <visual>
+            <!-- shift mesh down by inertial z so bottom sits near world z=0 -->
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="package://pick_place_arm/meshes/base_link.STL"
+                    scale="1 1 1" />
+            </geometry>
+            <material
+                name="">
+                <color
+                    rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+            </material>
+        </visual>
+        <collision>
+            <!-- match collision to visual offset -->
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="package://pick_place_arm/meshes/base_link.STL"
+                    scale="1 1 1" />
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- link and  joint 1 -->
+    <link
+        name="l1">
+        <inertial>
+            <origin
+                xyz="-2.06768076421691E-05 5.55111512312578E-17 -0.0236812970530659"
+                rpy="0 0 0" />
+            <mass
+                value="0.0412610106656879" />
+            <inertia
+                ixx="6.45452263055135E-06"
+                ixy="2.11421567445258E-20"
+                ixz="-5.6717389565191E-10"
+                iyy="1.08529418395194E-05"
+                iyz="-1.09193933489413E-20"
+                izz="8.35698735982533E-06" />
+        </inertial>
+        <visual>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="package://pick_place_arm/meshes/l1.STL"
+                    scale="1 1 1" />
+            </geometry>
+            <material
+                name="">
+                <color
+                    rgba="1 1 1 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="package://pick_place_arm/meshes/l1.STL"
+                    scale="1 1 1" />
+            </geometry>
+        </collision>
+    </link>
+
+    <joint
+        name="j1"
+        type="revolute">
+        <origin
+            xyz="0.152 0 0.4755"
+            rpy="3.14159265358979 0 0" />
+        <parent
+            link="base_link" />
+        <child
+            link="l1" />
+        <axis
+            xyz="0 0 1" />
+        <limit
+            lower="-3.14"
+            upper="3.14"
+            effort="3.5"
+            velocity="5" />
+    </joint>
+
+    <transmission name="l1_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="j1">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="l1_motor">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <gazebo reference="l1">
+        <selfCollide>false</selfCollide>
+    </gazebo>
+
+    <!-- link and joint 2 -->
+    <link
+        name="l2">
+        <inertial>
+            <origin
+                xyz="0.0420000000000759 -3.38923333842445E-13 -2.54136989230602E-16"
+                rpy="0 0 0" />
+            <mass
+                value="0.0412639771770678" />
+            <inertia
+                ixx="2.03861872352237E-05"
+                ixy="3.95910079860835E-17"
+                ixz="-4.11255155103057E-20"
+                iyy="2.30212674355658E-05"
+                iyz="3.04387551826405E-19"
+                izz="8.54833447441498E-06" />
+        </inertial>
+        <visual>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="package://pick_place_arm/meshes/l2.STL"
+                    scale="1 1 1" />
+            </geometry>
+            <material
+                name="">
+                <color
+                    rgba="1 1 1 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="package://pick_place_arm/meshes/l2.STL"
+                    scale="1 1 1" />
+            </geometry>
+        </collision>
+    </link>
+
+    <joint
+        name="j2"
+        type="revolute">
+        <origin
+            xyz="0 0 -0.01"
+            rpy="0 -1.5707963267949 0" />
+        <parent
+            link="l1" />
+        <child
+            link="l2" />
+        <axis
+            xyz="0 0 1" />
+        <limit
+            lower="-1.57"
+            upper="1.57"
+            effort="3.5"
+            velocity="5" />
+    </joint>
+
+    <transmission name="l2_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="j2">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="l2_motor">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <gazebo reference="l2">
+        <selfCollide>false</selfCollide>
+    </gazebo>
+
+    <!-- link and joint 3 -->
+    <link
+        name="l3">
+        <inertial>
+            <origin
+                xyz="0.0424999999999702 -4.47003545289704E-13 -2.42861286636753E-16"
+                rpy="0 0 0" />
+            <mass
+                value="0.0895845826981461" />
+            <inertia
+                ixx="1.79494942674491E-05"
+                ixy="-2.23469531118263E-17"
+                ixz="-1.134347791319E-09"
+                iyy="2.28721177257845E-05"
+                iyz="-7.76933238540634E-21"
+                izz="1.35465501240485E-05" />
+        </inertial>
+        <visual>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="package://pick_place_arm/meshes/l3.STL"
+                    scale="1 1 1" />
+            </geometry>
+            <material
+                name="">
+                <color
+                    rgba="1 1 1 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="package://pick_place_arm/meshes/l3.STL"
+                    scale="1 1 1" />
+            </geometry>
+        </collision>
+    </link>
+
+    <joint
+        name="j3"
+        type="revolute">
+        <origin
+            xyz="0.084 0 0"
+            rpy="0 0 0" />
+        <parent
+            link="l2" />
+        <child
+            link="l3" />
+        <axis
+            xyz="0 0 1" />
+        <limit
+            lower="-1.57"
+            upper="1.57"
+            effort="3.5"
+            velocity="5" />
+    </joint>
+
+    <transmission name="l3_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="j3">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="l3_motor">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <gazebo reference="l3">
+        <selfCollide>false</selfCollide>
+    </gazebo>
+
+    <!-- link and joint 4 -->
+    <link
+        name="l4">
+        <inertial>
+            <origin
+                xyz="0.0419999999999631 -8.77908856722343E-14 -6.76542155630955E-17"
+                rpy="0 0 0" />
+            <mass
+                value="0.0412639771770679" />
+            <inertia
+                ixx="2.03861872352238E-05"
+                ixy="-1.19599812382758E-17"
+                ixz="1.25855831166055E-20"
+                iyy="2.30212674355659E-05"
+                iyz="-3.19494281538403E-21"
+                izz="8.54833447441501E-06" />
+        </inertial>
+        <visual>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="package://pick_place_arm/meshes/l4.STL"
+                    scale="1 1 1" />
+            </geometry>
+            <material
+                name="">
+                <color
+                    rgba="1 1 1 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="package://pick_place_arm/meshes/l4.STL"
+                    scale="1 1 1" />
+            </geometry>
+        </collision>
+    </link>
+
+    <joint
+        name="j4"
+        type="revolute">
+        <origin
+            xyz="0.085 0 0"
+            rpy="0 0 0" />
+        <parent
+            link="l3" />
+        <child
+            link="l4" />
+        <axis
+            xyz="0 0 1" />
+        <limit
+            lower="-1.57"
+            upper="1.57"
+            effort="1.5"
+            velocity="5" />
+    </joint>
+
+    <transmission name="l4_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="j4">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="l4_motor">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <gazebo reference="l4">
+        <selfCollide>false</selfCollide>
+    </gazebo>
+
+    <!-- link and joint 5 -->
+    <link
+        name="l5">
+        <inertial>
+            <origin
+                xyz="0.0451157165053789 -6.8534003345444E-05 0.000519380260867306"
+                rpy="0 0 0" />
+            <mass
+                value="0.0877350527785507" />
+            <inertia
+                ixx="2.15592269641528E-05"
+                ixy="1.08634477532556E-12"
+                ixz="6.61837513500239E-07"
+                iyy="4.21271739710682E-05"
+                iyz="-2.81945761009753E-12"
+                izz="2.9808063539004E-05" />
+        </inertial>
+        <visual>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="package://pick_place_arm/meshes/l5.STL"
+                    scale="1 1 1" />
+            </geometry>
+            <material
+                name="">
+                <color
+                    rgba="1 1 1 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="package://pick_place_arm/meshes/l5.STL"
+                    scale="1 1 1" />
+            </geometry>
+        </collision>
+    </link>
+
+    <joint
+        name="j5"
+        type="revolute">
+        <origin
+            xyz="0.0840000000000002 0 0"
+            rpy="0 0 0" />
+        <parent
+            link="l4" />
+        <child
+            link="l5" />
+        <axis
+            xyz="0 0 1" />
+        <limit
+            lower="-1.57"
+            upper="1.57"
+            effort="1.5"
+            velocity="5" />
+    </joint>
+
+    <transmission name="l5_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="j5">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="l5_motor">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <gazebo reference="l5">
+        <selfCollide>false</selfCollide>
+    </gazebo>
+
+    <!-- link and joint 6 -->
+    <link
+        name="l6">
+        <inertial>
+            <origin
+                xyz="0.00576248475220886 -0.00836947985173901 0.0418281038474617"
+                rpy="0 0 0" />
+            <mass
+                value="0.0615654328368001" />
+            <inertia
+                ixx="1.3328395039682E-05"
+                ixy="-5.68177296906049E-17"
+                ixz="8.11263645845668E-07"
+                iyy="3.09874612165587E-05"
+                iyz="1.14559993754873E-10"
+                izz="2.71409608334319E-05" />
+        </inertial>
+        <visual>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="package://pick_place_arm/meshes/l6.STL"
+                    scale="1 1 1" />
+            </geometry>
+            <material
+                name="">
+                <color
+                    rgba="1 1 1 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="package://pick_place_arm/meshes/l6.STL"
+                    scale="1 1 1" />
+            </geometry>
+        </collision>
+    </link>
+
+    <joint
+        name="j6"
+        type="revolute">
+        <origin
+            xyz="0.0969999999999956 -0.000110000000008909 0.0114999999999995"
+            rpy="0 1.5707963267949 0" />
+        <parent
+            link="l5" />
+        <child
+            link="l6" />
+        <axis
+            xyz="0 0 1" />
+        <limit
+            lower="-3.14"
+            upper="3.14"
+            effort="1.5"
+            velocity="5" />
+    </joint>
+
+    <transmission name="l6_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="j6">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="l6_motor">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <gazebo reference="l6">
+        <selfCollide>false</selfCollide>
+    </gazebo>
+
+    <!-- link and joint 7l -->
+    <link name="l7l">
+        <inertial>
+            <origin xyz="-0.00499999999999944 -0.00382395666679802 0.0172076606105726" rpy="0 0 0" />
+            <mass value="0.00361048012577551" />
+            <inertia ixx="3.45772069124056E-07" ixy="-2.03295410732378E-22" ixz="-6.72951643176804E-22" iyy="2.76867577106351E-07" iyz="-1.6984888429881E-10" izz="1.29079160780631E-07" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://pick_place_arm/meshes/l7l.STL" scale="1 1 1" />
+            </geometry>
+            <material name="">
+                <color rgba="1 1 1 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://pick_place_arm/meshes/l7l.STL" scale="1 1 1" />
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="j7l" type="prismatic">
+        <!-- restored original joint origin so gripper aligns correctly with l6 -->
+        <origin xyz="-0.0349999999999994 0.00432899628274147 0.059645910780674" rpy="0 0 0" />
+        <parent link="l6" />
+        <child link="l7l" />
+        <axis xyz="-1 0 0" />
+        <limit lower="-0.07" upper="0" effort="1.5" velocity="0.1" />
+    </joint>
+
+    <transmission name="l7l_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="j7l">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="l7l_motor">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <gazebo reference="l7l">
+        <selfCollide>false</selfCollide>
+    </gazebo>
+
+    <!-- link and joint 7r -->
+    <link name="l7r">
+        <inertial>
+            <origin xyz="-0.00500000000000059 -0.00382395666679794 -0.0172076606105728" rpy="0 0 0" />
+            <mass value="0.0036104801257755" />
+            <inertia ixx="3.45772069124056E-07" ixy="6.60142987848138E-22" ixz="-9.38876447288083E-22" iyy="2.7686757710635E-07" iyz="1.69848884298589E-10" izz="1.29079160780631E-07" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://pick_place_arm/meshes/l7r.STL" scale="1 1 1" />
+            </geometry>
+            <material name="">
+                <color rgba="1 1 1 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://pick_place_arm/meshes/l7r.STL" scale="1 1 1" />
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="j7r" type="prismatic">
+        <!-- restored original joint origin so gripper aligns correctly with l6 -->
+        <origin xyz="0.0350000000000013 0.00432899628274103 0.0596459107806736" rpy="3.14159265358979 0 3.14159265358979" />
+        <parent link="l6" />
+        <child link="l7r" />
+        <axis xyz="1 0 0" />
+        <limit lower="0" upper="0.07" effort="1.5" velocity="0.1" />
+    </joint>
+
+    <transmission name="l7r_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="j7r">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="l7r_motor">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <gazebo reference="l7r">
+        <selfCollide>false</selfCollide>
+    </gazebo>
+
+    <xacro:if value="$(arg gazebo_control)">
+        <ros2_control name="GazeboSimSystem" type="system">
+            <hardware>
+                <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+            </hardware>
+
+
+            <joint name="j1">
+                <command_interface name="position" />
+                <state_interface name="position" />
+                <state_interface name="velocity" />
+            </joint>
+
+            <joint name="j2">
+                <command_interface name="position" />
+                <state_interface name="position" />
+                <state_interface name="velocity" />
+            </joint>
+
+            <joint name="j3">
+                <command_interface name="position" />
+                <state_interface name="position" />
+                <state_interface name="velocity" />
+            </joint>
+
+            <joint name="j4">
+                <command_interface name="position" />
+                <state_interface name="position" />
+                <state_interface name="velocity" />
+            </joint>
+
+            <joint name="j5">
+                <command_interface name="position" />
+                <state_interface name="position" />
+                <state_interface name="velocity" />
+            </joint>
+
+            <joint name="j6">
+                <command_interface name="position" />
+                <state_interface name="position" />
+                <state_interface name="velocity" />
+            </joint>
+
+            <joint name="j7l">
+                <command_interface name="position" />
+                <state_interface name="position" />
+                <state_interface name="velocity" />
+            </joint>
+
+            <joint name="j7r">
+                <command_interface name="position" />
+                <state_interface name="position" />
+                <state_interface name="velocity" />
+            </joint>
+
+        </ros2_control>
+    </xacro:if>
+
+    <gazebo>
+        <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+            <robot_param>robot_description</robot_param>
+            <robot_param_node>robot_state_publisher</robot_param_node>
+            <parameters>$(find pick_place_arm)/config/ros2_control.yaml</parameters>
+        </plugin>
+    </gazebo>
+
+</robot>

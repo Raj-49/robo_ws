@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="pick_place_arm">
+    <xacro:arg name="initial_positions_file" default="initial_positions.yaml" />
+    <!-- Import pick_place_arm URDF with ros2_control for Gazebo -->
+    <xacro:include filename="$(find pick_place_arm)/urdf/arm.urdf.xacro" />
+    <!-- Note: ros2_control for MoveIt-only demos is not included here to avoid duplication with Gazebo's ros2_control. -->
+</robot>
