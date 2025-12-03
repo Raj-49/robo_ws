@@ -520,3 +520,4 @@ For the complete system with all features, see [main-version-readme.md](main-ver
 **Developed with ROS2 Humble, MoveIt2, and Gazebo Fortress**
 
 *Base version - Foundation for vision-based robotic manipulation*
+
