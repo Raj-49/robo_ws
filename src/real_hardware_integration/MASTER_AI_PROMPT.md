@@ -54,9 +54,9 @@ I am working on a ROS2 Humble robotic arm project with MoveIt integration. I hav
 
 ## Hardware Specifications
 
-**Location**: `src/real_hardware_integration/docs/hardware_specs_form.md`
+**Location**: `src/real_hardware_integration/hardware_specifications.txt`
 
-Please read my completed hardware specification form at the location above. It contains all details about:
+Please read my hardware specification file at the location above. This file was generated using the interactive HTML form and contains all details about:
 
 - Motor types and IDs
 - Communication interface
@@ -66,13 +66,20 @@ Please read my completed hardware specification form at the location above. It c
 - Safety requirements
 - Real-time requirements
 
+**Note**: If the file doesn't exist yet, I need to:
+
+1. Open `src/real_hardware_integration/hardware_specs_form.html` in a web browser
+2. Fill out the form with my hardware details
+3. Click "Generate Specification File" to create `hardware_specifications.txt`
+4. Place the downloaded file in `src/real_hardware_integration/` directory
+
 ## Integration Request
 
 Please execute the following plan:
 
 ### Phase 1: Analysis & Planning
 
-1. Read and analyze my hardware specifications from `hardware_specs_form.md`
+1. Read and analyze my hardware specifications from `hardware_specifications.txt`
 2. Identify the motor type and communication protocol
 3. Create a detailed implementation plan
 4. Identify potential challenges or missing information

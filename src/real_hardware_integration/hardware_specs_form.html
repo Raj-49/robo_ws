@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hardware Specification Form</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 40px;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+      }
+
+      .header p {
+        font-size: 1.1em;
+        opacity: 0.9;
+      }
+
+      .form-content {
+        padding: 40px;
+      }
+
+      .section {
+        margin-bottom: 40px;
+        padding-bottom: 30px;
+        border-bottom: 2px solid #f0f0f0;
+      }
+
+      .section:last-child {
+        border-bottom: none;
+      }
+
+      .section-title {
+        font-size: 1.5em;
+        color: #667eea;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .section-title::before {
+        content: "▶";
+        font-size: 0.8em;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #333;
+      }
+
+      input[type="text"],
+      input[type="number"],
+      select,
+      textarea {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1em;
+        transition: border-color 0.3s;
+      }
+
+      input[type="text"]:focus,
+      input[type="number"]:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+
+      textarea {
+        min-height: 100px;
+        resize: vertical;
+        font-family: inherit;
+      }
+
+      .checkbox-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+
+      .checkbox-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+      }
+
+      .table-container {
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+
+      th,
+      td {
+        padding: 12px;
+        text-align: left;
+        border: 1px solid #e0e0e0;
+      }
+
+      th {
+        background: #f8f9fa;
+        font-weight: 600;
+        color: #667eea;
+      }
+
+      td input {
+        width: 100%;
+        border: 1px solid #e0e0e0;
+        padding: 8px;
+        border-radius: 4px;
+      }
+
+      .submit-section {
+        text-align: center;
+        padding: 30px 0;
+      }
+
+      .btn-submit {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 16px 48px;
+        font-size: 1.2em;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        font-weight: 600;
+      }
+
+      .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+      }
+
+      .btn-submit:active {
+        transform: translateY(0);
+      }
+
+      .success-message {
+        display: none;
+        background: #4caf50;
+        color: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      .success-message.show {
+        display: block;
+      }
+
+      .info-box {
+        background: #e3f2fd;
+        border-left: 4px solid #2196f3;
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+      }
+
+      .required {
+        color: #f44336;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🤖 Hardware Specification Form</h1>
+        <p>
+          Fill out this form to generate specifications for AI-guided hardware
+          integration
+        </p>
+      </div>
+
+      <div class="form-content">
+        <div class="info-box">
+          <strong>📋 Instructions:</strong> Fill out as many fields as possible.
+          Fields marked with <span class="required">*</span> are required. When
+          you submit, a formatted specification file will be downloaded for use
+          with the Master AI Prompt.
+        </div>
+
+        <form id="hardwareForm">
+          <!-- Section 1: Motor Information -->
+          <div class="section">
+            <h2 class="section-title">Motor/Actuator Information</h2>
+
+            <div class="form-group">
+              <label>Motor Type <span class="required">*</span></label>
+              <select id="motorType" required>
+                <option value="">Select motor type...</option>
+                <option value="Dynamixel">Dynamixel Servos</option>
+                <option value="Stepper">Stepper Motors</option>
+                <option value="DC">DC Motors with Encoders</option>
+                <option value="CAN">CAN-based Actuators</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Motor Model/Specification</label>
+              <input
+                type="text"
+                id="motorModel"
+                placeholder="e.g., Dynamixel XM430-W350"
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Motor IDs/Addresses</label>
+              <div class="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Joint</th>
+                      <th>Motor ID</th>
+                      <th>Notes</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>j1 (base)</td>
+                      <td><input type="text" id="motor_j1" /></td>
+                      <td><input type="text" id="notes_j1" /></td>
+                    </tr>
+                    <tr>
+                      <td>j2 (shoulder)</td>
+                      <td><input type="text" id="motor_j2" /></td>
+                      <td><input type="text" id="notes_j2" /></td>
+                    </tr>
+                    <tr>
+                      <td>j3 (elbow)</td>
+                      <td><input type="text" id="motor_j3" /></td>
+                      <td><input type="text" id="notes_j3" /></td>
+                    </tr>
+                    <tr>
+                      <td>j4 (wrist 1)</td>
+                      <td><input type="text" id="motor_j4" /></td>
+                      <td><input type="text" id="notes_j4" /></td>
+                    </tr>
+                    <tr>
+                      <td>j5 (wrist 2)</td>
+                      <td><input type="text" id="motor_j5" /></td>
+                      <td><input type="text" id="notes_j5" /></td>
+                    </tr>
+                    <tr>
+                      <td>j6 (wrist 3)</td>
+                      <td><input type="text" id="motor_j6" /></td>
+                      <td><input type="text" id="notes_j6" /></td>
+                    </tr>
+                    <tr>
+                      <td>j7l (gripper L)</td>
+                      <td><input type="text" id="motor_j7l" /></td>
+                      <td><input type="text" id="notes_j7l" /></td>
+                    </tr>
+                    <tr>
+                      <td>j7r (gripper R)</td>
+                      <td><input type="text" id="motor_j7r" /></td>
+                      <td><input type="text" id="notes_j7r" /></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 2: Communication -->
+          <div class="section">
+            <h2 class="section-title">Communication Interface</h2>
+
+            <div class="form-group">
+              <label>Connection Type <span class="required">*</span></label>
+              <select id="connectionType" required>
+                <option value="">Select connection type...</option>
+                <option value="USB">USB</option>
+                <option value="Serial">Serial/UART</option>
+                <option value="CAN">CAN Bus</option>
+                <option value="Ethernet">Ethernet</option>
+                <option value="GPIO">GPIO Pins</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Connection Details</label>
+              <input
+                type="text"
+                id="connectionDetails"
+                placeholder="e.g., /dev/ttyUSB0, COM3, can0, 192.168.1.100"
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Communication Protocol</label>
+              <select id="protocol">
+                <option value="">Select protocol...</option>
+                <option value="Dynamixel 1.0">Dynamixel Protocol 1.0</option>
+                <option value="Dynamixel 2.0">Dynamixel Protocol 2.0</option>
+                <option value="Modbus">Modbus RTU/TCP</option>
+                <option value="CANopen">CANopen</option>
+                <option value="Custom">Custom Protocol</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Baud Rate / Speed</label>
+              <input type="number" id="baudRate" placeholder="e.g., 1000000" />
+            </div>
+          </div>
+
+          <!-- Section 3: Control Modes -->
+          <div class="section">
+            <h2 class="section-title">Control Modes</h2>
+
+            <div class="form-group">
+              <label>Available Control Modes</label>
+              <div class="checkbox-group">
+                <div class="checkbox-item">
+                  <input type="checkbox" id="mode_position" value="Position" />
+                  <label for="mode_position">Position Control</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="mode_velocity" value="Velocity" />
+                  <label for="mode_velocity">Velocity Control</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="mode_torque" value="Torque" />
+                  <label for="mode_torque">Torque/Current Control</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="mode_pwm" value="PWM" />
+                  <label for="mode_pwm">PWM Control</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label
+                >Preferred Control Mode <span class="required">*</span></label
+              >
+              <select id="preferredMode" required>
+                <option value="">Select preferred mode...</option>
+                <option value="Position">Position Control</option>
+                <option value="Velocity">Velocity Control</option>
+                <option value="Torque">Torque/Current Control</option>
+                <option value="PWM">PWM Control</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Section 4: Feedback -->
+          <div class="section">
+            <h2 class="section-title">Feedback/Sensing</h2>
+
+            <div class="form-group">
+              <label>Position Feedback Type</label>
+              <select id="positionFeedback">
+                <option value="">Select feedback type...</option>
+                <option value="Built-in Encoders">Built-in Encoders</option>
+                <option value="External Encoders">External Encoders</option>
+                <option value="Potentiometers">Potentiometers</option>
+                <option value="Hall Sensors">Hall Sensors</option>
+                <option value="None">No Position Feedback</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Encoder Resolution (counts/rev)</label>
+              <input
+                type="number"
+                id="encoderResolution"
+                placeholder="e.g., 4096"
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Velocity Feedback</label>
+              <select id="velocityFeedback">
+                <option value="">Select...</option>
+                <option value="Calculated">Calculated from Position</option>
+                <option value="Direct">Direct Velocity Sensor</option>
+                <option value="None">Not Available</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Current/Torque Feedback Available?</label>
+              <select id="currentFeedback">
+                <option value="">Select...</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Section 5: Physical Limits -->
+          <div class="section">
+            <h2 class="section-title">Physical Limits</h2>
+
+            <div class="form-group">
+              <label>Joint Limits (radians or meters)</label>
+              <div class="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Joint</th>
+                      <th>Min Position</th>
+                      <th>Max Position</th>
+                      <th>Max Velocity</th>
+                      <th>Max Torque</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>j1</td>
+                      <td><input type="text" id="limit_j1_min" /></td>
+                      <td><input type="text" id="limit_j1_max" /></td>
+                      <td><input type="text" id="limit_j1_vel" /></td>
+                      <td><input type="text" id="limit_j1_torque" /></td>
+                    </tr>
+                    <tr>
+                      <td>j2</td>
+                      <td><input type="text" id="limit_j2_min" /></td>
+                      <td><input type="text" id="limit_j2_max" /></td>
+                      <td><input type="text" id="limit_j2_vel" /></td>
+                      <td><input type="text" id="limit_j2_torque" /></td>
+                    </tr>
+                    <tr>
+                      <td>j3</td>
+                      <td><input type="text" id="limit_j3_min" /></td>
+                      <td><input type="text" id="limit_j3_max" /></td>
+                      <td><input type="text" id="limit_j3_vel" /></td>
+                      <td><input type="text" id="limit_j3_torque" /></td>
+                    </tr>
+                    <tr>
+                      <td>j4</td>
+                      <td><input type="text" id="limit_j4_min" /></td>
+                      <td><input type="text" id="limit_j4_max" /></td>
+                      <td><input type="text" id="limit_j4_vel" /></td>
+                      <td><input type="text" id="limit_j4_torque" /></td>
+                    </tr>
+                    <tr>
+                      <td>j5</td>
+                      <td><input type="text" id="limit_j5_min" /></td>
+                      <td><input type="text" id="limit_j5_max" /></td>
+                      <td><input type="text" id="limit_j5_vel" /></td>
+                      <td><input type="text" id="limit_j5_torque" /></td>
+                    </tr>
+                    <tr>
+                      <td>j6</td>
+                      <td><input type="text" id="limit_j6_min" /></td>
+                      <td><input type="text" id="limit_j6_max" /></td>
+                      <td><input type="text" id="limit_j6_vel" /></td>
+                      <td><input type="text" id="limit_j6_torque" /></td>
+                    </tr>
+                    <tr>
+                      <td>j7l</td>
+                      <td><input type="text" id="limit_j7l_min" /></td>
+                      <td><input type="text" id="limit_j7l_max" /></td>
+                      <td><input type="text" id="limit_j7l_vel" /></td>
+                      <td><input type="text" id="limit_j7l_torque" /></td>
+                    </tr>
+                    <tr>
+                      <td>j7r</td>
+                      <td><input type="text" id="limit_j7r_min" /></td>
+                      <td><input type="text" id="limit_j7r_max" /></td>
+                      <td><input type="text" id="limit_j7r_vel" /></td>
+                      <td><input type="text" id="limit_j7r_torque" /></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 6: Software -->
+          <div class="section">
+            <h2 class="section-title">Existing Software/Drivers</h2>
+
+            <div class="form-group">
+              <label>Do you have existing driver code?</label>
+              <select id="hasDriver">
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Driver Library/SDK</label>
+              <input
+                type="text"
+                id="driverLibrary"
+                placeholder="e.g., dynamixel_sdk, libcanopen"
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Operating System <span class="required">*</span></label>
+              <select id="os" required>
+                <option value="">Select OS...</option>
+                <option value="Ubuntu 22.04">Ubuntu 22.04 (Recommended)</option>
+                <option value="Ubuntu 20.04">Ubuntu 20.04</option>
+                <option value="Other Linux">Other Linux</option>
+                <option value="Windows">Windows (WSL2 required)</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Section 7: Safety -->
+          <div class="section">
+            <h2 class="section-title">Safety Requirements</h2>
+
+            <div class="form-group">
+              <label>Emergency Stop</label>
+              <select id="emergencyStop">
+                <option value="">Select...</option>
+                <option value="Hardware">Hardware E-stop Button</option>
+                <option value="Software">Software E-stop Only</option>
+                <option value="None">Not Implemented</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Required Safety Features</label>
+              <div class="checkbox-group">
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="safety_limits"
+                    value="Joint Limits"
+                  />
+                  <label for="safety_limits">Joint Limit Enforcement</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="safety_velocity"
+                    value="Velocity Limiting"
+                  />
+                  <label for="safety_velocity">Velocity Limiting</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="safety_torque"
+                    value="Torque Limiting"
+                  />
+                  <label for="safety_torque">Torque/Current Limiting</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="safety_collision"
+                    value="Collision Detection"
+                  />
+                  <label for="safety_collision">Collision Detection</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="safety_watchdog"
+                    value="Watchdog"
+                  />
+                  <label for="safety_watchdog">Watchdog Timer</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 8: Real-Time -->
+          <div class="section">
+            <h2 class="section-title">Real-Time Requirements</h2>
+
+            <div class="form-group">
+              <label>Desired Control Loop Frequency (Hz)</label>
+              <input
+                type="number"
+                id="controlFrequency"
+                placeholder="e.g., 100"
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Maximum Acceptable Latency (ms)</label>
+              <input type="number" id="maxLatency" placeholder="e.g., 10" />
+            </div>
+
+            <div class="form-group">
+              <label>Hard Real-Time Required?</label>
+              <select id="hardRealtime">
+                <option value="No">No (Soft real-time acceptable)</option>
+                <option value="Yes">Yes (Need RT_PREEMPT kernel)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Section 9: Power -->
+          <div class="section">
+            <h2 class="section-title">Power Supply</h2>
+
+            <div class="form-group">
+              <label>Motor Power Voltage (V)</label>
+              <input type="number" id="motorVoltage" placeholder="e.g., 12" />
+            </div>
+
+            <div class="form-group">
+              <label>Motor Power Current Capacity (A)</label>
+              <input type="number" id="motorCurrent" placeholder="e.g., 5" />
+            </div>
+
+            <div class="form-group">
+              <label>Power Supply Type</label>
+              <input
+                type="text"
+                id="powerSupplyType"
+                placeholder="e.g., SMPS 12V 5A"
+              />
+            </div>
+          </div>
+
+          <!-- Section 10: Additional Info -->
+          <div class="section">
+            <h2 class="section-title">Additional Information</h2>
+
+            <div class="form-group">
+              <label>Calibration/Homing</label>
+              <select id="calibration">
+                <option value="">Select...</option>
+                <option value="Absolute">
+                  Absolute Encoders (No homing needed)
+                </option>
+                <option value="Homing">Need Homing Sequence</option>
+                <option value="Manual">Manual Calibration Required</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Special Considerations</label>
+              <textarea
+                id="specialNotes"
+                placeholder="Any special requirements, quirks, or important notes about your hardware..."
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label>Testing Environment Status</label>
+              <select id="testingStatus">
+                <option value="">Select...</option>
+                <option value="Ready">Full robot assembled and ready</option>
+                <option value="Individual">
+                  Individual motors can be tested
+                </option>
+                <option value="Pending">Need to order/build hardware</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="submit-section">
+            <button type="submit" class="btn-submit">
+              Generate Specification File
+            </button>
+            <div id="successMessage" class="success-message">
+              ✅ Specification file generated successfully! Check your downloads
+              folder for <strong>hardware_specifications.txt</strong>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      document
+        .getElementById("hardwareForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          // Collect all form data
+          const formData = {
+            motorType: document.getElementById("motorType").value,
+            motorModel: document.getElementById("motorModel").value,
+            motors: {},
+            connectionType: document.getElementById("connectionType").value,
+            connectionDetails:
+              document.getElementById("connectionDetails").value,
+            protocol: document.getElementById("protocol").value,
+            baudRate: document.getElementById("baudRate").value,
+            controlModes: [],
+            preferredMode: document.getElementById("preferredMode").value,
+            positionFeedback: document.getElementById("positionFeedback").value,
+            encoderResolution:
+              document.getElementById("encoderResolution").value,
+            velocityFeedback: document.getElementById("velocityFeedback").value,
+            currentFeedback: document.getElementById("currentFeedback").value,
+            limits: {},
+            hasDriver: document.getElementById("hasDriver").value,
+            driverLibrary: document.getElementById("driverLibrary").value,
+            os: document.getElementById("os").value,
+            emergencyStop: document.getElementById("emergencyStop").value,
+            safetyFeatures: [],
+            controlFrequency: document.getElementById("controlFrequency").value,
+            maxLatency: document.getElementById("maxLatency").value,
+            hardRealtime: document.getElementById("hardRealtime").value,
+            motorVoltage: document.getElementById("motorVoltage").value,
+            motorCurrent: document.getElementById("motorCurrent").value,
+            powerSupplyType: document.getElementById("powerSupplyType").value,
+            calibration: document.getElementById("calibration").value,
+            specialNotes: document.getElementById("specialNotes").value,
+            testingStatus: document.getElementById("testingStatus").value,
+          };
+
+          // Collect motor IDs
+          const joints = ["j1", "j2", "j3", "j4", "j5", "j6", "j7l", "j7r"];
+          joints.forEach((joint) => {
+            formData.motors[joint] = {
+              id: document.getElementById(`motor_${joint}`).value,
+              notes: document.getElementById(`notes_${joint}`).value,
+            };
+          });
+
+          // Collect control modes
+          ["position", "velocity", "torque", "pwm"].forEach((mode) => {
+            if (document.getElementById(`mode_${mode}`).checked) {
+              formData.controlModes.push(
+                document.getElementById(`mode_${mode}`).value
+              );
+            }
+          });
+
+          // Collect limits
+          joints.forEach((joint) => {
+            formData.limits[joint] = {
+              min: document.getElementById(`limit_${joint}_min`).value,
+              max: document.getElementById(`limit_${joint}_max`).value,
+              vel: document.getElementById(`limit_${joint}_vel`).value,
+              torque: document.getElementById(`limit_${joint}_torque`).value,
+            };
+          });
+
+          // Collect safety features
+          ["limits", "velocity", "torque", "collision", "watchdog"].forEach(
+            (feature) => {
+              if (document.getElementById(`safety_${feature}`).checked) {
+                formData.safetyFeatures.push(
+                  document.getElementById(`safety_${feature}`).value
+                );
+              }
+            }
+          );
+
+          // Generate formatted text file
+          const content = generateSpecificationFile(formData);
+
+          // Download file
+          const blob = new Blob([content], { type: "text/plain" });
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "hardware_specifications.txt";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(url);
+
+          // Show success message
+          document.getElementById("successMessage").classList.add("show");
+          setTimeout(() => {
+            document.getElementById("successMessage").classList.remove("show");
+          }, 5000);
+        });
+
+      function generateSpecificationFile(data) {
+        let content = `# HARDWARE SPECIFICATIONS
+# Generated: ${new Date().toISOString()}
+# For use with Master AI Integration Prompt
+
+================================================================================
+SECTION 1: MOTOR/ACTUATOR INFORMATION
+================================================================================
+
+Motor Type: ${data.motorType}
+Motor Model: ${data.motorModel || "Not specified"}
+
+Motor IDs/Addresses:
+`;
+
+        Object.keys(data.motors).forEach((joint) => {
+          if (data.motors[joint].id) {
+            content += `  ${joint}: ID=${data.motors[joint].id}`;
+            if (data.motors[joint].notes) {
+              content += ` (${data.motors[joint].notes})`;
+            }
+            content += "\n";
+          }
+        });
+
+        content += `
+================================================================================
+SECTION 2: COMMUNICATION INTERFACE
+================================================================================
+
+Connection Type: ${data.connectionType}
+Connection Details: ${data.connectionDetails || "Not specified"}
+Communication Protocol: ${data.protocol || "Not specified"}
+Baud Rate: ${data.baudRate || "Not specified"}
+
+================================================================================
+SECTION 3: CONTROL MODES
+================================================================================
+
+Available Control Modes: ${data.controlModes.join(", ") || "Not specified"}
+Preferred Control Mode: ${data.preferredMode}
+
+================================================================================
+SECTION 4: FEEDBACK/SENSING
+================================================================================
+
+Position Feedback: ${data.positionFeedback || "Not specified"}
+Encoder Resolution: ${data.encoderResolution || "Not specified"} counts/rev
+Velocity Feedback: ${data.velocityFeedback || "Not specified"}
+Current/Torque Feedback: ${data.currentFeedback || "Not specified"}
+
+================================================================================
+SECTION 5: PHYSICAL LIMITS
+================================================================================
+
+Joint Limits (position in rad/m, velocity in rad/s or m/s, torque in Nm):
+`;
+
+        Object.keys(data.limits).forEach((joint) => {
+          const limit = data.limits[joint];
+          if (limit.min || limit.max || limit.vel || limit.torque) {
+            content += `  ${joint}: min=${limit.min || "N/A"}, max=${
+              limit.max || "N/A"
+            }, vel=${limit.vel || "N/A"}, torque=${limit.torque || "N/A"}\n`;
+          }
+        });
+
+        content += `
+================================================================================
+SECTION 6: EXISTING SOFTWARE/DRIVERS
+================================================================================
+
+Existing Driver Code: ${data.hasDriver}
+Driver Library/SDK: ${data.driverLibrary || "Not specified"}
+Operating System: ${data.os}
+
+================================================================================
+SECTION 7: SAFETY REQUIREMENTS
+================================================================================
+
+Emergency Stop: ${data.emergencyStop || "Not specified"}
+Required Safety Features: ${data.safetyFeatures.join(", ") || "Not specified"}
+
+================================================================================
+SECTION 8: REAL-TIME REQUIREMENTS
+================================================================================
+
+Desired Control Loop Frequency: ${data.controlFrequency || "Not specified"} Hz
+Maximum Acceptable Latency: ${data.maxLatency || "Not specified"} ms
+Hard Real-Time Required: ${data.hardRealtime}
+
+================================================================================
+SECTION 9: POWER SUPPLY
+================================================================================
+
+Motor Power Voltage: ${data.motorVoltage || "Not specified"} V
+Motor Power Current: ${data.motorCurrent || "Not specified"} A
+Power Supply Type: ${data.powerSupplyType || "Not specified"}
+
+================================================================================
+SECTION 10: ADDITIONAL INFORMATION
+================================================================================
+
+Calibration/Homing: ${data.calibration || "Not specified"}
+Testing Environment Status: ${data.testingStatus || "Not specified"}
+
+Special Considerations:
+${data.specialNotes || "None specified"}
+
+================================================================================
+END OF HARDWARE SPECIFICATIONS
+================================================================================
+
+INSTRUCTIONS FOR AI:
+This file contains the hardware specifications for real hardware integration.
+Please read this file and use the information to implement the RealRobotHardware
+plugin according to the Master AI Integration Prompt.
+
+Key Information Summary:
+- Motor Type: ${data.motorType}
+- Connection: ${data.connectionType} (${
+          data.connectionDetails || "details not provided"
+        })
+- Protocol: ${data.protocol || "not specified"}
+- Control Mode: ${data.preferredMode}
+- OS: ${data.os}
+`;
+
+        return content;
+      }
+    </script>
+  </body>
+</html>
