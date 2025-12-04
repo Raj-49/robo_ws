@@ -1,0 +1,28 @@
+# This config is used by ros2_control_node for FakeRobotHardware
+controller_manager:
+  ros__parameters:
+    update_rate: 100 # Lower rate for fake hardware (100Hz is sufficient for testing)
+    use_sim_time: false
+
+    arm_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    gripper_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+arm_controller:
+  ros__parameters:
+    joints: ["j1", "j2", "j3", "j4", "j5", "j6"]
+    command_interfaces: ["position"]
+    state_interfaces: ["position", "velocity"]
+    allow_nonzero_velocity_at_trajectory_end: false
+
+gripper_controller:
+  ros__parameters:
+    joints: ["j7l", "j7r"]
+    command_interfaces: ["position"]
+    state_interfaces: ["position", "velocity"]
+    allow_nonzero_velocity_at_trajectory_end: false

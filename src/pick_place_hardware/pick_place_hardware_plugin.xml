@@ -1,0 +1,10 @@
+<library path="pick_place_hardware">
+  <class name="pick_place_hardware/FakeRobotHardware"
+         type="pick_place_hardware::FakeRobotHardware"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+      Fake hardware interface for testing without real robot or Gazebo.
+      Simulates actuator delay, encoder noise, and basic physics.
+    </description>
+  </class>
+</library>

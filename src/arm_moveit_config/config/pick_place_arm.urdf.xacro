@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="pick_place_arm">
+    <xacro:arg name="initial_positions_file" default="initial_positions.yaml" />
+    <xacro:arg name="use_fake_hardware" default="false" />
+    
+    <!-- Import pick_place_arm URDF -->
+    <xacro:include filename="$(find pick_place_arm)/urdf/arm.urdf.xacro" />
+    
+    <!-- Conditionally include fake hardware ros2_control if not using Gazebo -->
+    <xacro:if value="$(arg use_fake_hardware)">
+        <xacro:include filename="$(find pick_place_hardware)/config/fake_hardware.ros2_control.xacro" />
+        <xacro:fake_hardware_ros2_control name="FakeRobotSystem" />
+    </xacro:if>
+</robot>
+
