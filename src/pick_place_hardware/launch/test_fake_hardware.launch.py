@@ -41,7 +41,7 @@ def generate_launch_description():
         description='Start RViz'
     )
 
-    # Robot State Publisher
+    # Robot State Publisher - CRITICAL for RViz visualization
     robot_state_publisher = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
@@ -52,7 +52,7 @@ def generate_launch_description():
         output="screen",
     )
 
-    # Controller Manager
+    # Controller Manager with robot_description and ros2_control config
     ros2_control_config = os.path.join(pick_place_hardware_share, 'config', 'ros2_control.yaml')
     
     controller_manager = Node(
@@ -60,7 +60,8 @@ def generate_launch_description():
         executable="ros2_control_node",
         parameters=[
             moveit_config.robot_description,
-            ros2_control_config
+            ros2_control_config,
+            {"use_sim_time": LaunchConfiguration('use_sim_time')}
         ],
         output="screen",
     )
